@@ -4,24 +4,29 @@ var logger = new Logger({
     warn: "reverse.fg_magenta.bg_yellow"
   },
   logFunction: console.log,
+  formatText: "%level %customDate - %content ",
   formatSeparator: " ",
-  formatText: [
-    "level",
-    (options) => {
+  formatActions: {
+    customDate: (options) => {
       return options.date.toISOString();
-    },
-    "content" ],
+    }
+  },
   labels: {
     warn: "[WARNING] "
   }
 });
 
-logger.log("debug", "ciao sono il debug brutto, perchè nessuno mi vuole");
+logger.addRankAction("debug", (data) => {
 
-logger.log("info", "ciao info il piu bello di [[fg_red:tutti]] perchè di solito tutti possono leggermi");
+  console.log("PROVIDED A DEBUG")
 
-// logger.log("warn", "ciao sono il warn bello, ma oggi potrebbe essere una brutta giornata");
-//
-// logger.log("error", "ciao sono l'errore bello");
+})
 
-"%timestamp / %error_level_extended / %content"
+logger.log("debug", "ciao [[reverse:sono]] il debug brutto, perchè nessuno mi vuole");
+
+logger.log("info", "ciao info il piu bello di [[blink.underscore.fg_red:tutti]] perchè di solito tutti possono leggermi");
+logger.log("info", "ciao info il piu bello di [[reverse:tutti]] perchè di solito tutti possono leggermi");
+
+logger.log("warn", "ciao sono il warn bello, ma oggi potrebbe essere una brutta giornata");
+
+logger.log("error", "ciao sono l'errore bello");

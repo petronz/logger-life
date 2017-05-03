@@ -92,15 +92,16 @@ class Logger {
       info: []
     };
 
-    this.formatText = options.formatText || ["content"];
-
     this.formatSeparator = options.formatSeparator || " ";
 
-    this.formatActions = {
+    this.formatText = options.formatText || "%level %date - %content";
+    this.formatActions = options.formatActions ||  {};
+
+    Object.assign(this.formatActions, {
       content: ({content}) => { return content },
       level: ({level}) => { return self.labels[level] || "" },
       date: ({date}) => { return date }
-    };
+    });
 
     this.regexp = options.regexp || /\[\[*([^\]]+)\]\]/g;
 
@@ -123,7 +124,7 @@ class Logger {
 
   addRankAction(level, action) {
 
-    if(typeof this.levelsDependencies.includes(level) != typeof undefined) {
+    if(this.levelsDependencies.includes(level)) {
       this.actionsPerformer[level].push(action);
     }
 
@@ -177,7 +178,7 @@ class Logger {
       content = elaborate(content, item);
     }
 
-    content.formatted = [];
+    content.formatted = self.formatText;
 
     let options =  {
       content: content.colored,
@@ -185,16 +186,17 @@ class Logger {
       date: new Date()
     };
 
-    for(let formatOption of self.formatText) {
+    for(let formatAction in self.formatActions) {
 
-      if(typeof formatOption === typeof ( () => {} )) {
-        content.formatted.push((formatOption(options) || ""));
-      } else if(typeof self.formatActions[formatOption] === typeof ( () => {} )) {
-        content.formatted.push(self.formatActions[formatOption](options));
+      if(self.formatText.includes(formatAction)) {
+
+        let s = self.formatActions[formatAction](options)
+        let re = new RegExp(`%${formatAction}`, 'g');
+        content.formatted = content.formatted.replace(re, s);
+
       }
 
     }
-    content.formatted = content.formatted.join(self.formatSeparator);
 
     content.formatted = `${mainColor}${content.formatted}${self.colors.reset}`;
     delete content.colored;
