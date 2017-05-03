@@ -6,7 +6,7 @@ class Logger {
     level: "debug",
     formatColors: {},
     labels: {},
-    format: ["content"]
+    formatText: ["content"]
   }) {
 
     var self = this;
@@ -88,12 +88,12 @@ class Logger {
       log: []
     };
 
-    this.format = options.format || ["content"];
+    this.formatText = options.formatText || ["content"];
 
     this.formatActions = {
-      content: ({content}) => { return content; },
-      level: ({level}) => { return self.labels[level] || ""; },
-      date: ({date}) => { return date; }
+      content: ({content}) => { return content },
+      level: ({level}) => { return self.labels[level] || "" },
+      date: ({date}) => { return date }
     };
 
   }
@@ -170,7 +170,6 @@ class Logger {
       content = elaborate(content, item);
     }
 
-    content.colored = `${mainColor}${content.colored}${self.colors.reset}`;
     content.formatted = "";
 
     let options =  {
@@ -179,12 +178,13 @@ class Logger {
       date: new Date()
     };
 
-    for(let formatOption of self.format) {
+    for(let formatOption of self.formatText) {
       if(typeof self.formatActions[formatOption] === typeof ( () => {} )) {
         content.formatted += self.formatActions[formatOption](options);
       }
     }
 
+    content.formatted = `${mainColor}${content.formatted}${self.colors.reset}`;
     delete content.colored;
 
     console.log(content.formatted);
