@@ -7,6 +7,8 @@ class Logger {
     formatColors: {},
     labels: {},
     formatText: ["content"],
+    formatSeparator: " ",
+    logFunction: console.log,
     regexp: false
   }) {
 
@@ -41,6 +43,8 @@ class Logger {
       bg_crimson: "\x1b[48m"
     };
 
+    this.logFunction = options.logFunction || console.log;
+
     this.labels = {
       log: "[L]",
       warn: "[W]",
@@ -71,9 +75,9 @@ class Logger {
     /*need to be ordered*/
     this.levelsDependencies = [
       "debug",
+      "info",
       "warn",
-      "error",
-      "info"
+      "error"
     ];
 
     if(!!options.level && typeof this.levelsDependencies.includes(options.level) != typeof undefined) {
@@ -85,11 +89,12 @@ class Logger {
       debug: [],
       warn: [],
       error: [],
-      info: [],
-      log: []
+      info: []
     };
 
     this.formatText = options.formatText || ["content"];
+
+    this.formatSeparator = options.formatSeparator || " ";
 
     this.formatActions = {
       content: ({content}) => { return content },
@@ -105,10 +110,10 @@ class Logger {
 
     var levelsDependencies = this.levelsDependencies;
 
-    if(typeof levelsDependencies.includes(level) != typeof undefined) {
+    if(this.levelsDependencies.includes(level)) {
 
-      let i = levelsDependencies.indexOf(level);
-      for(let l of levelsDependencies.splice(i, levelsDependencies.length)) {
+      for(let i = this.levelsDependencies.indexOf(level); i <= this.levelsDependencies.length - 1; i++) {
+        let l = this.levelsDependencies[i];
         this.actionsPerformer[l].push(action);
       }
 
@@ -172,7 +177,7 @@ class Logger {
       content = elaborate(content, item);
     }
 
-    content.formatted = "";
+    content.formatted = [];
 
     let options =  {
       content: content.colored,
@@ -181,15 +186,20 @@ class Logger {
     };
 
     for(let formatOption of self.formatText) {
-      if(typeof self.formatActions[formatOption] === typeof ( () => {} )) {
-        content.formatted += self.formatActions[formatOption](options);
+
+      if(typeof formatOption === typeof ( () => {} )) {
+        content.formatted.push((formatOption(options) || ""));
+      } else if(typeof self.formatActions[formatOption] === typeof ( () => {} )) {
+        content.formatted.push(self.formatActions[formatOption](options));
       }
+
     }
+    content.formatted = content.formatted.join(self.formatSeparator);
 
     content.formatted = `${mainColor}${content.formatted}${self.colors.reset}`;
     delete content.colored;
 
-    console.log(content.formatted);
+    this.logFunction(content.formatted);
 
     options.content = content;
 
@@ -221,7 +231,6 @@ class Logger {
 
   }
   warn(content) {
-
     let level = "warn";
     if(!this.levelsDependencies.includes(level)) {
       return false;
