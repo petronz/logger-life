@@ -6,7 +6,8 @@ class Logger {
     level: "debug",
     formatColors: {},
     labels: {},
-    formatText: ["content"]
+    formatText: ["content"],
+    regexp: false
   }) {
 
     var self = this;
@@ -96,6 +97,8 @@ class Logger {
       date: ({date}) => { return date }
     };
 
+    this.regexp = options.regexp || /\[\[*([^\]]+)\]\]/g;
+
   }
 
   addLevelAction(level, action) {
@@ -125,11 +128,10 @@ class Logger {
 
     var self = this;
     var list = [];
-    var re = /{{*([^}]+)}}/g;
     var item;
     var mainColor = self.colors.reset;
 
-    while(item = re.exec(content)) {
+    while(item = this.regexp.exec(content)) {
       max--;
       if(max <= 0) { break }
       list.push(item);
