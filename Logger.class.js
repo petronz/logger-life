@@ -7,7 +7,6 @@ class Logger {
     formatColors: {},
     labels: {},
     formatText: ["content"],
-    formatSeparator: " ",
     logFunction: console.log,
     regexp: false
   }) {
@@ -91,8 +90,6 @@ class Logger {
       error: [],
       info: []
     };
-
-    this.formatSeparator = options.formatSeparator || " ";
 
     this.formatText = options.formatText || "%level %date - %content";
     this.formatActions = options.formatActions ||  {};

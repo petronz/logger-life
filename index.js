@@ -5,7 +5,6 @@ var logger = new Logger({
   },
   logFunction: console.log,
   formatText: "%level %customDate - %content ",
-  formatSeparator: " ",
   formatActions: {
     customDate: (options) => {
       return options.date.toISOString();
