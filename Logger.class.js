@@ -49,8 +49,8 @@ class Logger {
     };
 
     for(let label in options.labels) {
-      if(typeof this.labels[level] !== typeof undefined) {
-        this.labels[level] = options.labels[level];
+      if(typeof this.labels[label] !== typeof undefined) {
+        this.labels[label] = options.labels[label];
       }
     }
 
@@ -100,11 +100,12 @@ class Logger {
 
   addLevelAction(level, action) {
 
-    if(typeof this.levelsDependencies.includes(level) != typeof undefined) {
+    var levelsDependencies = this.levelsDependencies;
 
-      let i = this.levelsDependencies.indexOf(level);
+    if(typeof levelsDependencies.includes(level) != typeof undefined) {
 
-      for(let l of this.levelsDependencies.splice(i, this.levelsDependencies.length)) {
+      let i = levelsDependencies.indexOf(level);
+      for(let l of levelsDependencies.splice(i, levelsDependencies.length)) {
         this.actionsPerformer[l].push(action);
       }
 
