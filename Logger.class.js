@@ -8,10 +8,21 @@ class Logger {
     labels: {},
     formatText: ["content"],
     logFunction: console.log,
-    regexp: false
+    regexp: false,
+    fileLog: {
+      path: ".",
+      level: {
+        info: false,
+        debug: false,
+        error: false,
+        warning: false
+      }
+    }
   }) {
 
     var self = this;
+
+    this.fs = require("fs");
 
     this.colors = {
       none: "",
@@ -101,6 +112,16 @@ class Logger {
     });
 
     this.regexp = options.regexp || /\[\[*([^\]]+)\]\]/g;
+
+    this.fileLog = options.fileLog || {
+      path: ".",
+      level: {
+        info: false,
+        debug: false,
+        error: false,
+        warning: false
+      }
+    };
 
   }
 
@@ -228,6 +249,10 @@ class Logger {
       }
     }
 
+    if(!!this.fileLog.level[level]) {
+      this.writeFile(level, content.content.formatted)
+    }
+
   }
   warn(content) {
     let level = "warn";
@@ -241,6 +266,9 @@ class Logger {
       for(let action of this.actionsPerformer[level]) {
         action(content);
       }
+    }
+    if(!!this.fileLog.level[level]) {
+      this.writeFile(level, content.content.formatted)
     }
 
   }
@@ -258,6 +286,9 @@ class Logger {
         action(content);
       }
     }
+    if(!!this.fileLog.level[level]) {
+      this.writeFile(level, content.content.formatted)
+    }
 
   }
   debug(content) {
@@ -274,7 +305,14 @@ class Logger {
         action(content);
       }
     }
+    if(!!this.fileLog.level[level]) {
+      this.writeFile(level, content.content.formatted)
+    }
 
+  }
+
+  writeFile(level, content) {
+    this.fs.appendFileSync(`${this.fileLog.path}/${level}.log`, `${content}\n`);
   }
 
 }

@@ -1,4 +1,5 @@
-var Logger = require("./Logger.class.js");
+const Logger = require("./Logger.class.js");
+
 var logger = new Logger({
   formatColors: {
     warn: "reverse.fg_magenta.bg_yellow"
@@ -12,13 +13,20 @@ var logger = new Logger({
   },
   labels: {
     warn: "[WARNING] "
+  },
+  fileLog: {
+    path: __dirname,
+    level: {
+      info: false,
+      debug: false,
+      error: false,
+      warn: false
+    }
   }
 });
 
 logger.addRankAction("debug", (data) => {
-
-  console.log("PROVIDED A DEBUG")
-
+  console.log("PROVIDED A DEBUG");
 })
 
 logger.log("debug", "ciao [[reverse:sono]] il debug brutto, perchè nessuno mi vuole");
