@@ -2,7 +2,6 @@
 
 /*jshint esversion: 6 */
 
-
 class Logger {
 
   constructor (options = {
@@ -149,6 +148,35 @@ class Logger {
       "reset.fg_magenta",
       "bright.fg_magenta"
     ];
+
+    this._say = require('say');
+    this._sayStack = [];
+
+  }
+
+  say(text, force = false) {
+
+    var self = this;
+
+    if(!self._sayStack.length || force) {
+
+      if(!force) {
+        self._sayStack.push(text);
+      }
+
+      this._say.speak(text, null, 1.2, function(err) {
+        if (err){
+          return console.error(err);
+        }
+        self._sayStack.shift();
+        if(!!self._sayStack.length) {
+          self.say(self._sayStack[0], true);
+        }
+      });
+
+    } else if(!force) {
+      self._sayStack.push(text);
+    }
 
   }
 
@@ -326,6 +354,12 @@ class Logger {
       this.writeFile(level, content.content.formatted)
     }
 
+    if(options.say === true) {
+      this.say(content.content.unformatted)
+    } else if(!!options.say && typeof options.say == typeof "string") {
+      this.say(options.say)
+    }
+
   }
   warn(content, options = {}) {
     let level = "warn";
@@ -342,6 +376,12 @@ class Logger {
     }
     if(!!this.fileLog.level[level]) {
       this.writeFile(level, content.content.formatted)
+    }
+
+    if(options.say === true) {
+      this.say(content.content.unformatted)
+    } else if(!!options.say && typeof options.say == typeof "string") {
+      this.say(options.say)
     }
 
   }
@@ -363,6 +403,12 @@ class Logger {
       this.writeFile(level, content.content.formatted)
     }
 
+    if(options.say === true) {
+      this.say(content.content.unformatted)
+    } else if(!!options.say && typeof options.say == typeof "string") {
+      this.say(options.say)
+    }
+
   }
   debug(content, options = {}) {
 
@@ -380,6 +426,12 @@ class Logger {
     }
     if(!!this.fileLog.level[level]) {
       this.writeFile(level, content.content.formatted)
+    }
+
+    if(options.say === true) {
+      this.say(content.content.unformatted)
+    } else if(!!options.say && typeof options.say == typeof "string") {
+      this.say(options.say)
     }
 
   }

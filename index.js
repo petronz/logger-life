@@ -111,9 +111,7 @@ logger.addLevelAction("info", (data) => {
 /*
 * log as this, with LOGGER.log("level", "content")
 */
-logger.log("debug", "Hello! I'm [[underscore:Debug]] and i am very useful", {
-  fabulous: true
-});
+logger.log("debug", "Hello! I'm [[underscore:Debug]] and i am very useful");
 logger.log("warn", "Hello! I'm [[reverse.bg_yellow:warn]] [[and i am very useful]]", {
   fabulous: true
 });
@@ -126,6 +124,17 @@ logger.info("Hello! I'm [[reverse.bg_yellow:Info]] and i am [[underscore:very us
 });
 logger.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]", {
   fabulous: true
+});
+
+/*
+* do you want a vocal feedback?
+*/
+logger.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]", {
+  say: true
+});
+
+logger.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]", {
+  say: "same as up"
 });
 
 /*
