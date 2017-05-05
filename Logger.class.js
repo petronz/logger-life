@@ -1,4 +1,7 @@
+"use strict"
+
 /*jshint esversion: 6 */
+
 
 class Logger {
 
@@ -7,7 +10,7 @@ class Logger {
     formatColors: {},
     labels: {},
     formatText: ["content"],
-    logFunction: console.log,
+    logFunction: console.warn,
     regexp: false,
     fileLog: {
       path: ".",
@@ -17,6 +20,9 @@ class Logger {
         error: false,
         warning: false
       }
+    },
+    fabulous: {
+      formatColors: []
     }
   }) {
 
@@ -123,6 +129,71 @@ class Logger {
       }
     };
 
+    this.fabulizer = (!!options.fabulous && Array.isArray(options.fabulous.formatColor)) ? options.fabulous.formatColor : [
+      "bright.fg_red",
+      "reset.fg_red",
+      "dim.fg_red",
+      "dim.fg_yellow",
+      "reset.fg_yellow",
+      "bright.fg_yellow",
+      "bright.fg_green",
+      "reset.fg_green",
+      "dim.fg_green",
+      "dim.fg_cyan",
+      "reset.fg_cyan",
+      "bright.fg_cyan",
+      "bright.fg_blue",
+      "reset.fg_blue",
+      "dim.fg_blue",
+      "dim.fg_magenta",
+      "reset.fg_magenta",
+      "bright.fg_magenta"
+    ];
+
+  }
+
+  get availableColors() {
+    return Reflect.ownKeys(this.colors);
+  }
+
+  fabulous(content) {
+
+    var result = "";
+    var mainColor = this.colors.reset;
+    var exitSafe = content.length;
+    var counter = 0;
+
+    for(let i = 0; i <= content.length - 1; i++) {
+
+      if(counter > exitSafe) {
+        console.warn("fabulous has something wrong, exit");
+        break;
+      }
+
+      let color = "";
+
+      if(content[i] == " ") {
+
+        let c1 = content.slice(0, i);
+        let c2 = content.slice(i, content.length).replace(" ", "");
+        i--;
+        content = c1+c2;
+        result += " ";
+
+      } else {
+
+        for(let c of this.fabulizer[i%this.fabulizer.length].split(".")) {
+          color += this.colors[c];
+        }
+        result += `${color}${content[i]}`;
+
+      }
+      counter++;
+
+    }
+
+    return `${this.colors.reset}${result}`;
+
   }
 
   addLevelAction(level, action) {
@@ -148,7 +219,7 @@ class Logger {
 
   }
 
-  print(content, color = "", level = false) {
+  print(content, color = "", level = false, options) {
 
     var self = this;
     var list = [];
@@ -191,14 +262,16 @@ class Logger {
       return result;
 
     }
-
     for(item of list) {
       content = elaborate(content, item);
+    }
+    if(options.fabulous) {
+      content.colored = self.fabulous(content.unformatted);
     }
 
     content.formatted = self.formatText;
 
-    let options =  {
+    let result =  {
       content: content.colored,
       level: level,
       date: new Date()
@@ -208,7 +281,7 @@ class Logger {
 
       if(self.formatText.includes(formatAction)) {
 
-        let s = self.formatActions[formatAction](options)
+        let s = self.formatActions[formatAction](result)
         let re = new RegExp(`%${formatAction}`, 'g');
         content.formatted = content.formatted.replace(re, s);
 
@@ -221,27 +294,27 @@ class Logger {
 
     this.logFunction(content.formatted);
 
-    options.content = content;
+    result.content = content;
 
-    return options;
+    return result;
 
   }
 
-  log(level, content) {
+  log(level, content, options = {}) {
 
-    if(Reflect.ownKeys(this.formatColors).includes(level)) {
-      this[level](content);
+    if(Reflect.ownKeys(this.formatColors).includes(level) && typeof this[level] === typeof ( () => {} )) {
+      this[level](content, options);
     }
 
   }
-  info(content) {
+  info(content, options = {}) {
 
     let level = "info";
     if(!this.levelsDependencies.includes(level)) {
       return false;
     }
 
-    content = this.print(content, this.formatColors[level], level);
+    content = this.print(content, options.formatColor || this.formatColors[level], level, options);
 
     if(this.actionsPerformer[level].length) {
       for(let action of this.actionsPerformer[level]) {
@@ -254,13 +327,13 @@ class Logger {
     }
 
   }
-  warn(content) {
+  warn(content, options = {}) {
     let level = "warn";
     if(!this.levelsDependencies.includes(level)) {
       return false;
     }
 
-    content = this.print(content, this.formatColors[level], level);
+    content = this.print(content, options.formatColor || this.formatColors[level], level, options);
 
     if(this.actionsPerformer[level].length) {
       for(let action of this.actionsPerformer[level]) {
@@ -272,14 +345,14 @@ class Logger {
     }
 
   }
-  error(content) {
+  error(content, options = {}) {
 
     let level = "error";
     if(!this.levelsDependencies.includes(level)) {
       return false;
     }
 
-    content = this.print(content, this.formatColors[level], level);
+    content = this.print(content, options.formatColor || this.formatColors[level], level, options);
 
     if(this.actionsPerformer[level].length) {
       for(let action of this.actionsPerformer[level]) {
@@ -291,14 +364,14 @@ class Logger {
     }
 
   }
-  debug(content) {
+  debug(content, options = {}) {
 
     let level = "debug";
     if(!this.levelsDependencies.includes(level)) {
       return false;
     }
 
-    content = this.print(content, this.formatColors[level], level);
+    content = this.print(content, options.formatColor || this.formatColors[level], level, options);
 
     if(this.actionsPerformer[level].length) {
       for(let action of this.actionsPerformer[level]) {

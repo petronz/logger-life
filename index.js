@@ -59,7 +59,37 @@ var logger = new Logger({
       error: false,
       warn: false
     }
+  },
+  /*
+  * You think that fabulos mode is not enough fabulously-fabulos?
+  * you can set your own color palette!
+  * [Object]fabulous:
+  * contains the key [Array]formatColors.
+  * you can specify an array colors configurations to use into fabulos mode
+  */
+  fabulous: {
+    formatColor: [
+      "bright.fg_red",
+      "reset.fg_red",
+      "dim.fg_red",
+      "dim.fg_yellow",
+      "reset.fg_yellow",
+      "bright.fg_yellow",
+      "bright.fg_green",
+      "reset.fg_green",
+      "dim.fg_green",
+      "dim.fg_cyan",
+      "reset.fg_cyan",
+      "bright.fg_cyan",
+      "bright.fg_blue",
+      "reset.fg_blue",
+      "dim.fg_blue",
+      "dim.fg_magenta",
+      "reset.fg_magenta",
+      "bright.fg_magenta"
+    ]
   }
+
 });
 
 /*
@@ -78,10 +108,29 @@ logger.addLevelAction("info", (data) => {
   console.log(`Provided a ${data.level} log, it has ${data.content.formatted}`);
 });
 
-logger.log("debug", "Hello! I'm [[underscore:Debug]] and i am very useful");
+/*
+* log as this, with LOGGER.log("level", "content")
+*/
+logger.log("debug", "Hello! I'm [[underscore:Debug]] and i am very useful", {
+  fabulous: true
+});
+logger.log("warn", "Hello! I'm [[reverse.bg_yellow:warn]] [[and i am very useful]]", {
+  fabulous: true
+});
 
-logger.info("Hello! I'm [[reverse.bg_yellow:Info]] and i am [[underscore:very useful]]");
+/*
+* log as this, with LOGGER.LEVEL("content")
+*/
+logger.info("Hello! I'm [[reverse.bg_yellow:Info]] and i am [[underscore:very useful]]", {
+  fabulous: true
+});
+logger.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]", {
+  fabulous: true
+});
 
-logger.log("warn", "Hello! I'm [[reverse.bg_yellow:warn]] [[and i am very useful]]");
-
-logger.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]");
+/*
+* most beautiful way to log
+*/
+logger.log("debug", "Hello! I'm [[underscore:Fabulous Debug]] and i am the very best", {
+  fabulous: true
+});
