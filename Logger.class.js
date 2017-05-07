@@ -340,9 +340,9 @@ class Logger {
       warning: {
         constructor: (logType = "warn") => {
           return (data) => {
-            self.log(logType, `name: ${warning.name}`);
-            self.log(logType, `message: ${warning.message}`);
-            self.log(logType, `stack: ${warning.stack}`);
+            self.log(logType, `name: ${data.name}`);
+            self.log(logType, `message: ${data.message}`);
+            self.log(logType, `stack: ${data.stack}`);
           }
         }
       },
