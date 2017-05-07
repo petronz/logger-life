@@ -1,5 +1,34 @@
 const Logger = require("./Logger.class.js");
 
+// process.on("uncaughtException", function(data) {
+//   console.warn(data.stack);
+//   console.warn(data.message);
+//   process.exit(1);
+// });
+//
+// process.on('unhandledRejection', (reason, promise) => {
+//   console.log('Unhandled Rejection at: Promise', promise, 'reason:', reason);
+//   process.exit(0);
+// });
+//
+// process.on("warning", (warning) => {
+//
+//   console.warn(warning.name);
+//   console.warn(warning.message);
+//   console.warn(warning.stack);
+//
+// })
+//
+// Promise.resolve(2).then((r) => {
+//     console.warn(rw);
+// });
+//
+// process.on('exit', (code) => {
+//   console.log("exit w/"+code);
+// });
+//
+// return
+
 var logger = new Logger({
   /*
   * [String]level: available levels are debug, info, warn and error.
@@ -88,6 +117,21 @@ var logger = new Logger({
       "reset.fg_magenta",
       "bright.fg_magenta"
     ]
+  },
+  /*
+  * Handlers
+  */
+  handlers: {
+    uncaughtException: {
+      logAs: "error",
+      exitCode: 1
+    },
+    unhandledRejection: {
+      logAs: "error"
+    },
+    exit: {
+      logAs: "debug"
+    }
   }
 
 });
@@ -97,7 +141,9 @@ var logger = new Logger({
 * specify for a certain rank a callback to execute every time the specific rank is logged
 */
 logger.addRankAction("debug", (data) => {
-  console.log(`Provided a debug log, it has ${data.content.formatted}`);
+  setTimeout(function() {
+    console.log(`Provided a ${data.level} log`);
+  }, 100);
 });
 
 /*
@@ -105,40 +151,39 @@ logger.addRankAction("debug", (data) => {
 * specify for a certain level a callback to execute every time the level is logged
 */
 logger.addLevelAction("info", (data) => {
-  console.log(`Provided a ${data.level} log, it has ${data.content.formatted}`);
+  setTimeout(function() {
+    console.log(`Provided a ${data.level} log`);
+  }, 100);
 });
 
 /*
 * log as this, with LOGGER.log("level", "content")
 */
 logger.log("debug", "Hello! I'm [[underscore:Debug]] and i am very useful");
-logger.log("warn", "Hello! I'm [[reverse.bg_yellow:warn]] [[and i am very useful]]", {
-  fabulous: true
-});
+logger.log("warn", "Hello! I'm [[reverse.bg_yellow:warn]] [[and i am very useful]]");
 
 /*
 * log as this, with LOGGER.LEVEL("content")
 */
-logger.info("Hello! I'm [[reverse.bg_yellow:Info]] and i am [[underscore:very useful]]", {
-  fabulous: true
-});
-logger.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]", {
-  fabulous: true
-});
+logger.info("Hello! I'm [[reverse.bg_yellow:Info]] and i am [[underscore:very useful]]");
+logger.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]");
 
 /*
-* do you want a vocal feedback?
+* working on local and do you want a vocal feedback?
 */
 logger.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]", {
   say: true
 });
 
+/*
+* working on local and do you want a custom vocal feedback for a specific log message?
+*/
 logger.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]", {
-  say: "same as up"
+  say: "error"
 });
 
 /*
-* most beautiful way to log
+* finally, the most beautiful and useless way to log
 */
 logger.log("debug", "Hello! I'm [[underscore:Fabulous Debug]] and i am the very best", {
   fabulous: true

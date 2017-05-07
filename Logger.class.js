@@ -2,13 +2,186 @@
 
 /*jshint esversion: 6 */
 
+/*
+* Here goes privates functions and variables
+*/
+const privates = {
+
+  print: function(content, color = "", level = false, options) {
+
+    var self = this;
+    var list = [];
+    var item;
+    var mainColor = self.colors.reset;
+
+    while(item = this.regexp.exec(content)) {
+      max--;
+      if(max <= 0) { break }
+      list.push(item);
+    }
+
+    content = {
+      colored: content,
+      unformatted: content
+    };
+
+    for(let c of color.split(".")) {
+      mainColor = (typeof self.colors[c] !== typeof undefined) ? `${mainColor}${self.colors[c]}` : mainColor;
+    }
+
+    var max = 200;
+
+    var elaborate = function(content, item) {
+
+      let element = item[1].split(":");
+
+      element = {
+        colors: (element.length > 1) ? element[0] : "",
+        phrase: (element.length > 1) ? element[1] : element[0]
+      }
+
+      let result = { unformatted: content.unformatted.replace(`${item[0]}`, `${element.phrase}`) }
+
+      for(let color of element.colors.split(".")) {
+        element.phrase = (typeof self.colors[color] !== typeof undefined) ? `${self.colors[color]}${element.phrase}` : element.phrase;
+      }
+      result.colored = content.colored.replace(`${item[0]}`, `${element.phrase}${mainColor}`);
+
+      return result;
+
+    }
+    for(item of list) {
+      content = elaborate(content, item);
+    }
+    if(options.fabulous) {
+      content.colored = privates.fabulous.call(self, content.unformatted);
+    }
+
+    content.formatted = self.formatText;
+
+    let result =  {
+      content: content.colored,
+      level: level,
+      date: new Date()
+    };
+    for(let formatAction in self.formatActions) {
+
+      if(self.formatText.includes(formatAction)) {
+
+        let s = self.formatActions[formatAction](result);
+        let re = new RegExp(`%${formatAction}`, 'g');
+        content.formatted = content.formatted.replace(re, s);
+
+      }
+
+    }
+
+    content.formatted = `${mainColor}${content.formatted}${self.colors.reset}`;
+    delete content.colored;
+
+    this.logFunction(content.formatted);
+
+    result.content = content;
+
+    return result;
+
+  },
+  _say: require('say'),
+  _fs: require('fs'),
+  say: function(text, queue, force = false) {
+
+    var self = this;
+
+    if(!queue.length || force) {
+
+      if(!force) {
+        queue.push(text);
+      }
+
+      this._say.speak(text, null, 1.2, function(err) {
+        if (err){
+          return console.error(err);
+        }
+        queue.shift();
+        if(!!queue.length) {
+          self.say(queue[0], queue, true);
+        }
+      });
+
+    } else if(!force) {
+      queue.push(text);
+    }
+
+  },
+  fabulous: function(content) {
+
+    var result = "";
+    var mainColor = this.colors.reset;
+    var exitSafe = content.length;
+    var counter = 0;
+
+    for(let i = 0; i <= content.length - 1; i++) {
+
+      if(counter > exitSafe) {
+        console.warn("fabulous has something wrong, exit");
+        break;
+      }
+
+      let color = "";
+
+      if(content[i] == " ") {
+
+        let c1 = content.slice(0, i);
+        let c2 = content.slice(i, content.length).replace(" ", "");
+        i--;
+        content = c1+c2;
+        result += " ";
+
+      } else {
+
+        for(let c of this.fabulizer[i%this.fabulizer.length].split(".")) {
+          color += this.colors[c];
+        }
+        result += `${color}${content[i]}`;
+
+      }
+      counter++;
+
+    }
+
+    return `${this.colors.reset}${result}`;
+
+  },
+  setupHandlers: function(handlers) {
+
+    if(typeof handlers === typeof undefined) {
+      return false;
+    }
+
+    for(let name in handlers) {
+      let fn = this.handlers[name].constructor(handlers[name].logAs || undefined, handlers[name].exitCode)
+      process.on(name, fn);
+    }
+
+    return true;
+
+  },
+  writeFile: function(level, content) {
+    privates._fs.appendFileSync(`${this.fileLog.path}/${level}.log`, `${content}\n`);
+  }
+
+};
+
+/*
+* Logger function
+*/
 class Logger {
 
   constructor (options = {
     level: "debug",
     formatColors: {},
     labels: {},
-    formatText: ["content"],
+    formatText: "%content",
     logFunction: console.warn,
     regexp: false,
     fileLog: {
@@ -26,8 +199,6 @@ class Logger {
   }) {
 
     var self = this;
-
-    this.fs = require("fs");
 
     this.colors = {
       none: "",
@@ -149,79 +320,49 @@ class Logger {
       "bright.fg_magenta"
     ];
 
-    this._say = require('say');
-    this._sayStack = [];
-
-  }
-
-  say(text, force = false) {
-
-    var self = this;
-
-    if(!self._sayStack.length || force) {
-
-      if(!force) {
-        self._sayStack.push(text);
+    this.handlers = {
+      uncaughtException: {
+        constructor: (logType = "error", exitCode = 1) => {
+          return (data) => {
+            self.log(logType, `message: ${data.message}`);
+            self.log(logType, `stack: ${data.stack}`);
+            process.exit((typeof exitCode === typeof 0) ? exitCode : 1);
+          }
+        }
+      },
+      unhandledRejection: {
+        constructor: (logType = "error") => {
+          return (reason, promise) => {
+            self.log(logType, `Unhandled Rejection at: Promise ${promise} reason: ${reason}`);
+          }
+        }
+      },
+      warning: {
+        constructor: (logType = "warn") => {
+          return (data) => {
+            self.log(logType, `name: ${warning.name}`);
+            self.log(logType, `message: ${warning.message}`);
+            self.log(logType, `stack: ${warning.stack}`);
+          }
+        }
+      },
+      exit: {
+        constructor: (logType = "debug") => {
+          return (code) => {
+            self.log(logType, `exit with message code ${code}`);
+          }
+        }
       }
-
-      this._say.speak(text, null, 1.2, function(err) {
-        if (err){
-          return console.error(err);
-        }
-        self._sayStack.shift();
-        if(!!self._sayStack.length) {
-          self.say(self._sayStack[0], true);
-        }
-      });
-
-    } else if(!force) {
-      self._sayStack.push(text);
     }
+
+    privates.setupHandlers.call(this, options.handlers);
+
+    this._sayQueue = [];
 
   }
 
   get availableColors() {
     return Reflect.ownKeys(this.colors);
-  }
-
-  fabulous(content) {
-
-    var result = "";
-    var mainColor = this.colors.reset;
-    var exitSafe = content.length;
-    var counter = 0;
-
-    for(let i = 0; i <= content.length - 1; i++) {
-
-      if(counter > exitSafe) {
-        console.warn("fabulous has something wrong, exit");
-        break;
-      }
-
-      let color = "";
-
-      if(content[i] == " ") {
-
-        let c1 = content.slice(0, i);
-        let c2 = content.slice(i, content.length).replace(" ", "");
-        i--;
-        content = c1+c2;
-        result += " ";
-
-      } else {
-
-        for(let c of this.fabulizer[i%this.fabulizer.length].split(".")) {
-          color += this.colors[c];
-        }
-        result += `${color}${content[i]}`;
-
-      }
-      counter++;
-
-    }
-
-    return `${this.colors.reset}${result}`;
-
   }
 
   addLevelAction(level, action) {
@@ -247,87 +388,6 @@ class Logger {
 
   }
 
-  print(content, color = "", level = false, options) {
-
-    var self = this;
-    var list = [];
-    var item;
-    var mainColor = self.colors.reset;
-
-    while(item = this.regexp.exec(content)) {
-      max--;
-      if(max <= 0) { break }
-      list.push(item);
-    }
-
-    content = {
-      colored: content,
-      unformatted: content
-    };
-
-    for(let c of color.split(".")) {
-      mainColor = (typeof self.colors[c] !== typeof undefined) ? `${mainColor}${self.colors[c]}` : mainColor;
-    }
-
-    var max = 200;
-
-    var elaborate = function(content, item) {
-
-      let element = item[1].split(":");
-
-      element = {
-        colors: (element.length > 1) ? element[0] : "",
-        phrase: (element.length > 1) ? element[1] : element[0]
-      }
-
-      let result = { unformatted: content.unformatted.replace(`${item[0]}`, `${element.phrase}`) }
-
-      for(let color of element.colors.split(".")) {
-        element.phrase = (typeof self.colors[color] !== typeof undefined) ? `${self.colors[color]}${element.phrase}` : element.phrase;
-      }
-      result.colored = content.colored.replace(`${item[0]}`, `${element.phrase}${mainColor}`);
-
-      return result;
-
-    }
-    for(item of list) {
-      content = elaborate(content, item);
-    }
-    if(options.fabulous) {
-      content.colored = self.fabulous(content.unformatted);
-    }
-
-    content.formatted = self.formatText;
-
-    let result =  {
-      content: content.colored,
-      level: level,
-      date: new Date()
-    };
-
-    for(let formatAction in self.formatActions) {
-
-      if(self.formatText.includes(formatAction)) {
-
-        let s = self.formatActions[formatAction](result)
-        let re = new RegExp(`%${formatAction}`, 'g');
-        content.formatted = content.formatted.replace(re, s);
-
-      }
-
-    }
-
-    content.formatted = `${mainColor}${content.formatted}${self.colors.reset}`;
-    delete content.colored;
-
-    this.logFunction(content.formatted);
-
-    result.content = content;
-
-    return result;
-
-  }
-
   log(level, content, options = {}) {
 
     if(Reflect.ownKeys(this.formatColors).includes(level) && typeof this[level] === typeof ( () => {} )) {
@@ -342,7 +402,7 @@ class Logger {
       return false;
     }
 
-    content = this.print(content, options.formatColor || this.formatColors[level], level, options);
+    content = privates.print.call(this, content, options.formatColor || this.formatColors[level], level, options);
 
     if(this.actionsPerformer[level].length) {
       for(let action of this.actionsPerformer[level]) {
@@ -351,13 +411,13 @@ class Logger {
     }
 
     if(!!this.fileLog.level[level]) {
-      this.writeFile(level, content.content.formatted)
+      privates.writeFile.call(this, level, content.content.formatted);
     }
 
     if(options.say === true) {
-      this.say(content.content.unformatted)
+      privates.say(content.content.unformatted, this._sayQueue)
     } else if(!!options.say && typeof options.say == typeof "string") {
-      this.say(options.say)
+      privates.say(options.say, this._sayQueue)
     }
 
   }
@@ -367,7 +427,7 @@ class Logger {
       return false;
     }
 
-    content = this.print(content, options.formatColor || this.formatColors[level], level, options);
+    content = privates.print.call(this, content, options.formatColor || this.formatColors[level], level, options);
 
     if(this.actionsPerformer[level].length) {
       for(let action of this.actionsPerformer[level]) {
@@ -375,13 +435,13 @@ class Logger {
       }
     }
     if(!!this.fileLog.level[level]) {
-      this.writeFile(level, content.content.formatted)
+      privates.writeFile.call(this, level, content.content.formatted)
     }
 
     if(options.say === true) {
-      this.say(content.content.unformatted)
+      privates.say(content.content.unformatted, this._sayQueue)
     } else if(!!options.say && typeof options.say == typeof "string") {
-      this.say(options.say)
+      privates.say(options.say, this._sayQueue)
     }
 
   }
@@ -392,7 +452,7 @@ class Logger {
       return false;
     }
 
-    content = this.print(content, options.formatColor || this.formatColors[level], level, options);
+    content = privates.print.call(this, content, options.formatColor || this.formatColors[level], level, options);
 
     if(this.actionsPerformer[level].length) {
       for(let action of this.actionsPerformer[level]) {
@@ -400,13 +460,13 @@ class Logger {
       }
     }
     if(!!this.fileLog.level[level]) {
-      this.writeFile(level, content.content.formatted)
+      privates.writeFile.call(this, level, content.content.formatted)
     }
 
     if(options.say === true) {
-      this.say(content.content.unformatted)
+      privates.say(content.content.unformatted, this._sayQueue)
     } else if(!!options.say && typeof options.say == typeof "string") {
-      this.say(options.say)
+      privates.say(options.say, this._sayQueue)
     }
 
   }
@@ -417,7 +477,7 @@ class Logger {
       return false;
     }
 
-    content = this.print(content, options.formatColor || this.formatColors[level], level, options);
+    content = privates.print.call(this, content, options.formatColor || this.formatColors[level], level, options);
 
     if(this.actionsPerformer[level].length) {
       for(let action of this.actionsPerformer[level]) {
@@ -425,19 +485,15 @@ class Logger {
       }
     }
     if(!!this.fileLog.level[level]) {
-      this.writeFile(level, content.content.formatted)
+      privates.writeFile.call(this, level, content.content.formatted)
     }
 
     if(options.say === true) {
-      this.say(content.content.unformatted)
+      privates.say(content.content.unformatted, this._sayQueue)
     } else if(!!options.say && typeof options.say == typeof "string") {
-      this.say(options.say)
+      privates.say(options.say, this._sayQueue)
     }
 
-  }
-
-  writeFile(level, content) {
-    this.fs.appendFileSync(`${this.fileLog.path}/${level}.log`, `${content}\n`);
   }
 
 }
