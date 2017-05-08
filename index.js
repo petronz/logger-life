@@ -1,6 +1,6 @@
-const Logger = require("./Logger.class.js");
+const LogLife = require("./LogLife.class.js");
 
-var logger = new Logger({
+var ll = new LogLife({
   /*
   * [String]level: available levels are debug, info, warn and error.
   * They accepts a string of available color concatenations (with "." as separator)
@@ -114,7 +114,7 @@ var logger = new Logger({
 * addRankAction([String]rank, [Function]callback):
 * specify for a certain rank a callback to execute every time the specific rank is logged
 */
-logger.addRankAction("debug", (data) => {
+ll.addRankAction("debug", (data) => {
   setTimeout(function() {
     console.log(`Provided a ${data.level} log`);
   }, 100);
@@ -124,41 +124,41 @@ logger.addRankAction("debug", (data) => {
 * addLevelAction([String]level, [Function]callback):
 * specify for a certain level a callback to execute every time the level is logged
 */
-logger.addLevelAction("info", (data) => {
+ll.addLevelAction("info", (data) => {
   setTimeout(function() {
     console.log(`Provided a ${data.level} log`);
   }, 100);
 });
 
 /*
-* log as this, with LOGGER.log("level", "content")
+* log as this, with ll.log("level", "content")
 */
-logger.log("debug", "Hello! I'm [[underscore:Debug]] and i am very useful");
-logger.log("warn", "Hello! I'm [[reverse.bg_yellow:warn]] [[and i am very useful]]");
+ll.log("debug", "Hello! I'm [[underscore:Debug]] and i am very useful");
+ll.log("warn", "Hello! I'm [[reverse.bg_yellow:warn]] [[and i am very useful]]");
 
 /*
-* log as this, with LOGGER.LEVEL("content")
+* log as this, with ll.LEVEL("content")
 */
-logger.info("Hello! I'm [[reverse.bg_yellow:Info]] and i am [[underscore:very useful]]");
-logger.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]");
+ll.info("Hello! I'm [[reverse.bg_yellow:Info]] and i am [[underscore:very useful]]");
+ll.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]");
 
 /*
 * working on local and do you want a vocal feedback?
 */
-logger.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]", {
+ll.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]", {
   say: true
 });
 
 /*
 * working on local and do you want a custom vocal feedback for a specific log message?
 */
-logger.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]", {
+ll.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]", {
   say: "error"
 });
 
 /*
 * finally, the most beautiful and useless way to log
 */
-logger.log("debug", "Hello! I'm [[underscore:Fabulous Debug]] and i am the very best", {
+ll.log("debug", "Hello! I'm [[underscore:Fabulous Debug]] and i am the very best", {
   fabulous: true
 });
