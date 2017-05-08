@@ -1,29 +1,17 @@
-# README #
+https://bitbucket.org/tutorials/markdowndemo
 
-This README would normally document whatever steps are necessary to get your application up and running.
+# Log-Life #
 
-### What is this repository for? ###
+Log Life is a logging library that provides you multiple log methods, string interpolations for messages, catching of main error and warning events.
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+### Usage example ###
 
-### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+```
+#!javascript
 
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+const LogLife = require("./LogLife.class.js");
+var ll = new LogLife();
+ll.log("info", "Hi! I'm info log level");
+ll.info("Hi! Also I'm info log level");
+```
