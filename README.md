@@ -8,10 +8,14 @@ Log Life is a logging library that provides you multiple log methods, string int
 
 
 ```
+
 #!javascript
 
 const LogLife = require("./LogLife.class.js");
+
 var ll = new LogLife();
+
 ll.log("info", "Hi! I'm info log level");
 ll.info("Hi! Also I'm info log level");
+
 ```
