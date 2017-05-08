@@ -1,34 +1,5 @@
 const Logger = require("./Logger.class.js");
 
-// process.on("uncaughtException", function(data) {
-//   console.warn(data.stack);
-//   console.warn(data.message);
-//   process.exit(1);
-// });
-//
-// process.on('unhandledRejection', (reason, promise) => {
-//   console.log('Unhandled Rejection at: Promise', promise, 'reason:', reason);
-//   process.exit(0);
-// });
-//
-// process.on("warning", (warning) => {
-//
-//   console.warn(warning.name);
-//   console.warn(warning.message);
-//   console.warn(warning.stack);
-//
-// })
-//
-// Promise.resolve(2).then((r) => {
-//     console.warn(rw);
-// });
-//
-// process.on('exit', (code) => {
-//   console.log("exit w/"+code);
-// });
-//
-// return
-
 var logger = new Logger({
   /*
   * [String]level: available levels are debug, info, warn and error.
@@ -128,6 +99,9 @@ var logger = new Logger({
     },
     unhandledRejection: {
       logAs: "error"
+    },
+    warning: {
+      logAs: "warn"
     },
     exit: {
       logAs: "debug"
