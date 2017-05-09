@@ -25,6 +25,10 @@ const privates = {
       unformatted: content
     };
 
+    if(options.formatColors) {
+      color = options.formatColors;
+    }
+
     for(let c of color.split(".")) {
       mainColor = (typeof self.colors[c] !== typeof undefined) ? `${mainColor}${self.colors[c]}` : mainColor;
     }

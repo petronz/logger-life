@@ -61,6 +61,24 @@ var ll = new LogLife({
     }
   },
   /*
+  * Handlers
+  */
+  handlers: {
+    uncaughtException: {
+      logAs: "error",
+      exitCode: 1
+    },
+    unhandledRejection: {
+      logAs: "error"
+    },
+    warning: {
+      logAs: "warn"
+    },
+    exit: {
+      logAs: "debug"
+    }
+  },
+  /*
   * You think that fabulos mode is not enough fabulously-fabulos?
   * you can set your own color palette!
   * [Object]fabulous:
@@ -88,24 +106,6 @@ var ll = new LogLife({
       "reset.fg_magenta",
       "bright.fg_magenta"
     ]
-  },
-  /*
-  * Handlers
-  */
-  handlers: {
-    uncaughtException: {
-      logAs: "error",
-      exitCode: 1
-    },
-    unhandledRejection: {
-      logAs: "error"
-    },
-    warning: {
-      logAs: "warn"
-    },
-    exit: {
-      logAs: "debug"
-    }
   }
 
 });
@@ -152,8 +152,15 @@ ll.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.d
 /*
 * working on local and do you want a custom vocal feedback for a specific log message?
 */
-ll.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]", {
+ll.error("very bad Error", {
   say: "error"
+});
+
+/*
+* finally, the most beautiful and useless way to log
+*/
+ll.log("debug", "force a specific log to change color", {
+  formatColors: "reverse"
 });
 
 /*
