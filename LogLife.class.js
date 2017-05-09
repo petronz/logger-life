@@ -14,7 +14,7 @@ const privates = {
     var item;
     var mainColor = self.colors.reset;
 
-    while(item = this.regexp.exec(content)) {
+    while(item = this.interpolation.regexp.exec(content)) {
       max--;
       if(max <= 0) { break }
       list.push(item);
@@ -37,7 +37,7 @@ const privates = {
 
     var elaborate = function(content, item) {
 
-      let element = item[1].split(":");
+      let element = item[1].split(self.interpolation.separator);
 
       element = {
         colors: (element.length > 1) ? element[0] : "",
@@ -187,7 +187,6 @@ class Logger {
     labels: {},
     formatText: "%content",
     logFunction: console.warn,
-    regexp: false,
     fileLog: {
       path: ".",
       level: {
@@ -291,8 +290,6 @@ class Logger {
       date: ({date}) => { return date }
     });
 
-    this.regexp = options.regexp || /\[\[*([^\]]+)\]\]/g;
-
     this.fileLog = options.fileLog || {
       path: ".",
       level: {
@@ -361,6 +358,17 @@ class Logger {
     privates.setupHandlers.call(this, options.handlers);
 
     this._sayQueue = [];
+
+    this.interpolation = {
+      regexp: false,
+      separator: ":"
+    };
+    for(let interpolation in options.interpolation) {
+      if(typeof this.interpolation[interpolation] !== typeof undefined) {
+        this.interpolation[interpolation] = options.interpolation[interpolation];
+      }
+    }
+    this.interpolation.regexp = (!!this.interpolation.regexp) ? this.interpolation.regexp : /\[\[*([^\]]+)\]\]/g;
 
   }
 

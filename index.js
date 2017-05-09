@@ -28,14 +28,9 @@ var ll = new LogLife({
   * They accepts a string of available color concatenations (with "." as separator)
   */
   formatColors: {
-    warn: "reverse.fg_magenta.bg_white",
-    error: "bg_white.fg_red"
+    warn: "fg_white",
+    error: "bright.fg_red"
   },
-  /*
-  * [Function]logFunction: accept an arbitrary function.
-  * it is used to log on console. Default: console.log
-  */
-  logFunction: console.log,
   /*
   * [Object]labels: available keys of labels are:
   * debug, info, warn and error.
@@ -44,6 +39,11 @@ var ll = new LogLife({
   labels: {
     warn: "[WARNING] "
   },
+  /*
+  * [Function]logFunction: accept an arbitrary function.
+  * it is used to log on console. Default: console.log
+  */
+  logFunction: console.log,
   /*
   * [Object]fileLog: available keys of fileLog are:
   * path and level.
@@ -106,6 +106,13 @@ var ll = new LogLife({
       "reset.fg_magenta",
       "bright.fg_magenta"
     ]
+  },
+  /*
+  * interpolation settings
+  */
+  interpolation: {
+    separator: "||",
+    regexp: false, // an example /{{*([^}]+)}}/g means check all text between "{{" and "}}"
   }
 
 });
@@ -133,19 +140,19 @@ ll.addLevelAction("info", (data) => {
 /*
 * log as this, with ll.log("level", "content")
 */
-ll.log("debug", "Hello! I'm [[underscore:Debug]] and i am very useful");
-ll.log("warn", "Hello! I'm [[reverse.bg_yellow:warn]] [[and i am very useful]]");
+ll.log("debug", "Hello! I'm [[underscore||Debug]] and i am very useful");
+ll.log("warn", "Hello! I'm [[reverse.bg_yellow||warn]] [[and i am very useful]]");
 
 /*
 * log as this, with ll.LEVEL("content")
 */
-ll.info("Hello! I'm [[reverse.bg_yellow:Info]] and i am [[underscore:very useful]]");
-ll.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]");
+ll.info("Hello! I'm [[reverse.bg_yellow||Info]] and i am [[underscore:very useful]]");
+ll.error("Hello! I'm [[reverse.bg_yellow||error]] and i am [[underscore.reverse.dim||very useful]]");
 
 /*
 * working on local and do you want a vocal feedback?
 */
-ll.error("Hello! I'm [[reverse.bg_yellow:error]] and i am [[underscore.reverse.dim:very useful]]", {
+ll.error("Hello! I'm [[reverse.bg_yellow||error]] and i am [[underscore.reverse.dim||very useful]]", {
   say: true
 });
 
@@ -166,6 +173,6 @@ ll.log("debug", "force a specific log to change color", {
 /*
 * finally, the most beautiful and useless way to log
 */
-ll.log("debug", "Hello! I'm [[underscore:Fabulous Debug]] and i am the very best", {
+ll.log("debug", "Hello! I'm [[underscore||Fabulous Debug]] and i am the very best", {
   fabulous: true
 });
