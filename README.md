@@ -125,7 +125,10 @@ var ll = new LogLife({
       "dim.fg_red"
     ]
   },
-  regexp: false
+  interpolation: {
+    separator: "||",
+    regexp: false
+  }
 });
 
 ```
@@ -258,25 +261,78 @@ var ll = new LogLife({
 
 ### handlers ###
 
+The main process events can be logged via LogLife library.
+These process events are **uncaughtException**, **unhandledRejection**, **warning** and **exit**.
+Get a look at NodeJs documentation to know more about that.
+Each of them can be configured with a loagAs key, that has to contain as value one of the
+4 log rank.
+If you pass a boolean true to the process event, this will use a default value.
+Only on **uncaughtException** you can specify an exit value (with exitCode key). If you pass false as value to exitCode,
+it will not exit as default system behavior (not recommend).
+
 ```
 #!javascript
 
 var ll = new LogLife({
   handlers: {
     uncaughtException: {
-      logAs: "error",
-      exitCode: 1
+      logAs: "error", // default is error
+      exitCode: 1 //if error occurs, the script exit with value 1
     },
-    unhandledRejection: {
-      logAs: "error"
-    },
+    unhandledRejection: true, // default logAs is error
     warning: {
-      logAs: "warn"
+      logAs: "warn" // default is warn
     },
     exit: {
-      logAs: "debug"
+      logAs: "info" // default is debug
     }
   }
 });
+
+```
+### interpolation ###
+
+You can change the default ":" as  separator into interpolation on log string content
+and you can pass to the system the regexp that match the content to be interpolate
+
+```
+#!javascript
+
+var ll = new LogLife({
+  interpolation: {
+    regexp: /{{*([^}]+)}}/g, //means check all text between "{{" and "}}"
+    separator: "||"
+  }
+});
+
+ll.log("error", "this is {{reverse||error}}");
+
+```
+
+### fabulous ###
+
+Do you need a touch of... fabulous?
+You can pass an array of available styles to customize your fabulously fabulous
+text, otherwise it will use default values.
+Please, use it with careful, especially avoid production environment.
+I know, it's hard to resist to such many fabulousness.
+
+```
+#!javascript
+
+var ll = new LogLife({
+  fabulous: {
+    formatColor: [
+      "bright.fg_red",
+      "bright.fg_yellow",
+      "bright.fg_green",
+      "bright.fg_cyan",
+      "bright.fg_blue",
+      "bright.fg_magenta"
+    ]
+  }
+});
+
+ll.log("info", "this is fabulous text!", { fabulous: true });
 
 ```
