@@ -12,7 +12,7 @@ var ll = new LogLife({
   * %level, %date and %content.
   * You can also use customInterpolations like in the example %customDate
   */
-  formatText: "%level %customDate - %content ",
+  formatText: "%levelLabel %pidLabel %customDate - %content ",
   /*
   * [Object]formatActions: it accepts an object populated with (non-void)functions.
   * It is used to add custom actions that can be used into formatText
@@ -28,7 +28,6 @@ var ll = new LogLife({
   * They accepts a string of available color concatenations (with "." as separator)
   */
   formatColors: {
-    warn: "fg_white",
     error: "bright.fg_red"
   },
   /*
@@ -53,7 +52,7 @@ var ll = new LogLife({
   */
   fileLog: {
     path: __dirname,
-    level: {
+    rank: {
       info: false,
       debug: false,
       error: false,
@@ -166,7 +165,7 @@ ll.error("very bad Error", {
 /*
 * finally, the most beautiful and useless way to log
 */
-ll.log("debug", "force a specific log to change color", {
+ll.log("debug", "[[blink:force a specific log to change color]]", {
   formatColors: "reverse"
 });
 
@@ -176,3 +175,26 @@ ll.log("debug", "force a specific log to change color", {
 ll.log("debug", "Hello! I'm [[underscore||Fabulous Debug]] and i am the very best", {
   fabulous: true
 });
+
+var ll = new LogLife({
+  formatText: "%mainLabel - %customDate - %content", // default formatText is "%levelLabel %pidLabel %date - %content"
+  formatActions: {
+    mainLabel: (options) => {
+      return `[${options.level.toUpperCase()}|${options.pid}]`;
+    },
+    customDate: (options) => {
+      return + new Date(options.date);
+    }
+  }
+});
+
+ll.log("info", "this is info"); //this will return [INFO|13660] - 1495720604797 - this is info
+
+let myLogFunction = (data) => console.log(`my custom function say ${data}`);
+
+var ll = new LogLife({
+  logFunction: myLogFunction
+});
+
+ll.log("info", "this is info"); //this will log: my custom function say [INFO] [123456] - 1495720604797 - this is info
+ll.log("error", "this is error"); //this will log: my custom function say [ERROR] [123456] - 1495720604797 - this is error

@@ -66,7 +66,8 @@ const privates = {
     let result =  {
       content: content.colored,
       level: level,
-      date: new Date()
+      date: new Date(),
+      pid: process.pid
     };
     for(let formatAction in self.formatActions) {
 
@@ -189,7 +190,7 @@ class Logger {
     logFunction: console.warn,
     fileLog: {
       path: ".",
-      level: {
+      rank: {
         info: false,
         debug: false,
         error: false,
@@ -209,7 +210,6 @@ class Logger {
       bright: "\x1b[1m",
       dim: "\x1b[2m",
       underscore: "\x1b[4m",
-      blink: "\x1b[5m",
       reverse: "\x1b[7m",
       hidden: "\x1b[8m",
       fg_black: "\x1b[30m",
@@ -229,13 +229,11 @@ class Logger {
       bg_magenta: "\x1b[45m",
       bg_cyan: "\x1b[46m",
       bg_white: "\x1b[47m",
-      bg_crimson: "\x1b[48m"
     };
 
     this.logFunction = options.logFunction || console.log;
 
     this.labels = {
-      log: "[L]",
       warn: "[W]",
       info: "[I]",
       error: "[E]",
@@ -281,18 +279,19 @@ class Logger {
       info: []
     };
 
-    this.formatText = options.formatText || "%level %date - %content";
+    this.formatText = options.formatText || "%levelLabel %pidLabel %date - %content";
     this.formatActions = options.formatActions ||  {};
 
     Object.assign(this.formatActions, {
       content: ({content}) => { return content },
-      level: ({level}) => { return self.labels[level] || "" },
-      date: ({date}) => { return date }
+      levelLabel: ({level}) => { return self.labels[level] || "" },
+      date: ({date}) => { return date },
+      pidLabel: ({pid}) => { return `[PID:${pid}]` },
     });
 
     this.fileLog = options.fileLog || {
       path: ".",
-      level: {
+      rank: {
         info: false,
         debug: false,
         error: false,
@@ -421,7 +420,7 @@ class Logger {
       }
     }
 
-    if(!!this.fileLog.level[level]) {
+    if(!!this.fileLog.rank && !!this.fileLog.rank[level]) {
       privates.writeFile.call(this, level, content.content.formatted);
     }
 
@@ -445,7 +444,7 @@ class Logger {
         action(content);
       }
     }
-    if(!!this.fileLog.level[level]) {
+    if(!!this.fileLog.rank && !!this.fileLog.rank[level]) {
       privates.writeFile.call(this, level, content.content.formatted)
     }
 
@@ -470,7 +469,7 @@ class Logger {
         action(content);
       }
     }
-    if(!!this.fileLog.level[level]) {
+    if(!!this.fileLog.rank && !!this.fileLog.rank[level]) {
       privates.writeFile.call(this, level, content.content.formatted)
     }
 
@@ -495,7 +494,7 @@ class Logger {
         action(content);
       }
     }
-    if(!!this.fileLog.level[level]) {
+    if(!!this.fileLog.rank && !!this.fileLog.rank[level]) {
       privates.writeFile.call(this, level, content.content.formatted)
     }
 
