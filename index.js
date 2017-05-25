@@ -78,6 +78,13 @@ var ll = new LogLife({
     }
   },
   /*
+  * interpolation settings
+  */
+  interpolation: {
+    separator: "||",
+    regexp: false // an example /{{*([^}]+)}}/g means check all text between "{{" and "}}"
+  },
+  /*
   * You think that fabulos mode is not enough fabulously-fabulos?
   * you can set your own color palette!
   * [Object]fabulous:
@@ -105,13 +112,6 @@ var ll = new LogLife({
       "reset.fg_magenta",
       "bright.fg_magenta"
     ]
-  },
-  /*
-  * interpolation settings
-  */
-  interpolation: {
-    separator: "||",
-    regexp: false, // an example /{{*([^}]+)}}/g means check all text between "{{" and "}}"
   }
 
 });
@@ -198,3 +198,12 @@ var ll = new LogLife({
 
 ll.log("info", "this is info"); //this will log: my custom function say [INFO] [123456] - 1495720604797 - this is info
 ll.log("error", "this is error"); //this will log: my custom function say [ERROR] [123456] - 1495720604797 - this is error
+
+var ll = new LogLife({
+  interpolation: {
+    regexp: /{{*([^}]+)}}/g, //means check all text between "{{" and "}}"
+    separator: "||"
+  }
+});
+
+ll.log("error", "this is {{reverse||error}}");
