@@ -1,6 +1,4 @@
-https://bitbucket.org/tutorials/markdowndemo
-
-# Log-Life #
+# LogLife #
 
 Log Life is a logging library that provides you multiple log methods, string interpolations for messages, catching of main error and warning events, file logging, log interception and launch callbacks.
 
@@ -15,11 +13,64 @@ const LogLife = require("./LogLife.class.js");
 
 var ll = new LogLife();
 
-ll.log("info", "Hi! I'm info log level"); // output(in green): Hi! I'm info log level 
+ll.log("info", "Hi! I'm info log level"); // output(in green): Hi! I'm info log level
 ll.info("Hi! Also I'm info log level"); // output(in green): Hi! I'm info log level
 
 ll.log("error", "Hi! I'm info error level"); // output(in red): Hi! I'm error log level
 ```
+
+## Interpolations ##
+
+In case you want to change the color, underline or apply a bold
+some portions of text you can do it by using the interpolation.
+The string that has to be logged interpret the text between [[]].
+the content inside of it is splitted if a ":" is found.
+In this case, the part before ":" are the color style that has to be
+applied to the part after ":"
+
+```
+#!javascript
+
+var ll = new LogLife();
+
+ll.log("info", "Hi! I'm [[reverse:info]] log level"); // the info word will be color reversed
+ll.log("error", "Hi! I'm [[bg_red.fg_white:error]] log level"); // the error word will be foreground color in white and background colored in red
+
+```
+
+## Available colors and styles ##
+
+#### text styles ####
+
+* reset
+* bright
+* dim
+* underscore
+* reverse
+* hidden
+
+#### foreground colors ####
+
+* fg_black
+* fg_red
+* fg_green
+* fg_yellow
+* fg_blue
+* fg_magenta
+* fg_cyan
+* fg_white
+* fg_crimson
+
+#### backgrund colors ####
+
+* bg_black
+* bg_red
+* bg_green
+* bg_yellow
+* bg_blue
+* bg_magenta
+* bg_cyan
+* bg_white
 
 ## Full Configuration example ##
 
@@ -75,6 +126,157 @@ var ll = new LogLife({
     ]
   },
   regexp: false
+});
+
+```
+
+## Configuration explanation ##
+
+### Level ###
+
+LogLife provides you 4 log-levels: **debug**, **info**, **warn**, **error**.
+
+```
+#!javascript
+
+var ll = new LogLife({
+  level: "warn"
+});
+
+ll.log("warn", "this is warning"); //this will be logged
+ll.log("error", "this is error"); //this will be logged
+
+ll.log("debug", "this is debug"); //this will not be logged
+
+```
+### formatText and formatActions ###
+
+formatText provides you the possibility to fully customize
+the logged text. Default interpolation methods are: **%level**, **%pid**, **%date** and **%content**.
+You can add custom interpolation methods with formatActions.
+
+```
+#!javascript
+
+var ll = new LogLife({
+  formatText: "%mainLabel - %customDate - %content", // default formatText is "%levelLabel %pidLabel %date - %content"
+  formatActions: {
+    mainLabel: (options) => { //options contains all the main informations about the log
+      return `[${options.level.toUpperCase()}|${options.pid}]`;
+    },
+    customDate: (options) => {
+      return + new Date(options.date);
+    }
+  }
+});
+
+ll.log("info", "this is info"); //this will log: [INFO|13660] - 1495720604797 - this is info
+
+```
+### formatColors ###
+
+Change the default color of the 4 log levels.
+
+```
+#!javascript
+
+var ll = new LogLife({
+  formatColors: {
+    debug: "fg_red",
+    info: "fg_white.reverse",
+    warn: "fg_yellow.bright",
+    error: "bg_white.fg_red.underscore"
+  }
+});
+
+ll.log("info", "this is info"); //this will log the text in fg black and bg white
+ll.log("error", "this is error"); //this will log text with bg white, fg red underlined
+
+```
+
+### labels ###
+
+Change the default labels of the 4 log levels.
+
+```
+#!javascript
+
+var ll = new LogLife({
+  labels: {
+    debug: "[DEBUG]", // default is [D]
+    info: "[INFO]", // default is [I]
+    warn: "[WARN]", // default is [W]
+    error: "[ERROR]" // default is [E]
+  }
+});
+
+ll.log("info", "this is info"); //this will log: [INFO] [123456] - 1495720604797 - this is info
+ll.log("error", "this is error"); //this will log: [ERROR] [123456] - 1495720604797 - this is error
+
+```
+
+### logFunction ###
+
+Change the log responsible function. Default is console.log
+
+```
+#!javascript
+
+let myLogFunction = (data) => console.log(`my custom function say ${data}`);
+
+var ll = new LogLife({
+  logFunction: myLogFunction
+});
+
+ll.log("info", "this is info"); //this will log: my custom function say [I] [123456] - 1495720604797 - this is info
+ll.log("error", "this is error"); //this will log: my custom function say [E] [123456] - 1495720604797 - this is error
+
+```
+
+### fileLog ###
+
+Setup the directory where to write the log files.
+setup also which rank of log must be write into a log file.
+Logs are generated into different files, one per rank.
+
+```
+#!javascript
+
+var ll = new LogLife({
+  fileLog: {
+    path: __dirname,
+    rank: {
+      info: false,
+      debug: false,
+      error: true, // every occurrence of log error is written into __dirname/error.log
+      warn: false
+    }
+  }
+});
+
+```
+
+### handlers ###
+
+```
+#!javascript
+
+var ll = new LogLife({
+  handlers: {
+    uncaughtException: {
+      logAs: "error",
+      exitCode: 1
+    },
+    unhandledRejection: {
+      logAs: "error"
+    },
+    warning: {
+      logAs: "warn"
+    },
+    exit: {
+      logAs: "debug"
+    }
+  }
 });
 
 ```
