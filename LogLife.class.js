@@ -325,7 +325,9 @@ class Logger {
         constructor: (logType = "error", exitCode = 1) => {
           return (data) => {
             self.log(logType, `stack: ${data.stack}`);
-            process.exit((typeof exitCode === typeof 0) ? exitCode : 1);
+            if(exitCode !== false) {
+              process.exit((typeof exitCode === typeof 0) ? exitCode : 1);
+            }
           }
         }
       },
