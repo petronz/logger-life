@@ -138,7 +138,10 @@ var ll = new LogLife({
 ### Level ###
 
 LogLife provides you 4 log-levels: **debug**, **info**, **warn**, **error**.
-
+Debug is the highest log level, which means the other 3 levels will be logged
+in addition to it. When info is specified also warn and error are logged,
+but not debug. When warn is specified, in addition to it, only error is logged.
+When error is specified as level only it is logged.
 ```
 #!javascript
 
@@ -334,5 +337,125 @@ var ll = new LogLife({
 });
 
 ll.log("info", "this is fabulous text!", { fabulous: true });
+
+```
+
+## Methods ##
+
+```
+#!javascript
+
+var ll = new LogLife();
+
+ll.log("debug", "this is debug");
+ll.info("this is info");
+
+```
+
+### log ###
+
+Log accept 3 parameters: level, content and options.
+
+```
+#!javascript
+
+var ll = new LogLife();
+
+ll.log("debug", "this is debug");
+
+ll.log("info", "this is info");
+ll.log("info", "this is another info");
+
+ll.log("warn", "this is warn");
+
+ll.log("error", "this is error");
+ll.log("error", "this is another error");
+
+ll.log("info", "this is my last info", { fabulous: true });
+
+```
+
+### debug, info, warn and error ###
+
+You can log by using the level as method,
+by passing to it the 2 parameters content and options.
+
+```
+#!javascript
+
+var ll = new LogLife();
+
+ll.debug("this is debug");
+
+ll.info"this is info");
+ll.info("this is another info");
+
+ll.warn("this is warn");
+
+ll.error("this is error");
+ll.error("this is another error");
+
+ll.info("this is my last info", { fabulous: true });
+
+```
+
+## Events ##
+
+Events are very useful to execute some arbitrary code every time a log level occurs.
+You can add more then one event for each rank or level.
+
+### addRankAction ###
+
+This event is attached to a specific log rank.It triggers every time a log that rank is performed.
+
+```
+#!javascript
+
+var ll = new LogLife();
+var counter = 0;
+
+ll.addRankAction("debug", (data) => {
+  counter++;
+});
+ll.addRankAction("info", (data) => {
+  counter++;
+});
+ll.addRankAction("debug", (data) => {
+  counter++;
+});
+
+ll.debug("this is debug");
+ll.info("this is info");
+ll.error("this is error");
+ll.debug("this is debug");
+
+setTimeout(() => {
+  ll.info(`counter is ${counter}`); // counter is 5
+}, 1000)
+
+```
+
+### addLevelAction ###
+
+Same as for addRankAction, but it triggers for every level below the one specified.
+
+```
+#!javascript
+
+var ll = new LogLife();
+var counter = 0;
+
+ll.addLevelAction("info", (data) => {
+  counter++;
+});
+
+ll.debug("this is debug");
+ll.info("this is info");
+ll.error("this is error");
+ll.debug("this is debug");
+
+setTimeout(() => {
+  ll.info(`counter is ${counter}`); // counter is 2
+}, 1000)
 
 ```

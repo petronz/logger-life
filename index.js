@@ -207,3 +207,25 @@ var ll = new LogLife({
 });
 
 ll.log("error", "this is {{reverse||error}}");
+
+var ll = new LogLife();
+var counter = 0;
+
+ll.addRankAction("debug", (data) => {
+  counter++;
+});
+ll.addRankAction("info", (data) => {
+  counter++;
+});
+ll.addRankAction("debug", (data) => {
+  counter++;
+});
+
+ll.debug("this is debug");
+ll.info("this is info");
+ll.error("this is error");
+ll.debug("this is debug");
+
+setTimeout(() => {
+  ll.info(`counter is ${counter}`); // counter is 5
+}, 1000)
