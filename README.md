@@ -3,6 +3,31 @@
 LoggerLife is a logging library for NodeJs that provides you multiple log methods, string interpolations for messages,
 catching of main process error and warning events, file logging, log interception and callbacks launch.
 
+* [Usage example](#usage-example)
+* [Interpolations](#interpolations)
+* [Available colors and styles](#available-colors-and-styles)
+  * [Text styles](#text-styles)
+ * [Foreground colors](#foreground-colors)
+ * [Background colors](#background-colors)
+* [Full Configuration example](#full-configuration-example)
+* [Configurations](#configurations)
+  * [Level](#level)
+  * [FormatText and formatActions](#formattext-and-formatactions)
+  * [FormatColors](#formatcolors)
+  * [Labels](#labels)
+  * [LogFunction](#logfunction)
+  * [FileLog](#filelog)
+  * [Handlers](#handlers)
+  * [Interpolation](#interpolation)
+  * [Fabulous](#fabulous)
+* [Methods](#methods)
+  * [Log](#log)
+  * [Debug, info, warn and error](#debug-info-warn-and-error)
+  * [Available options for log](#available-options-for-log)
+* [Events](#events)
+  * [AddRankAction](#addrankAction)
+  * [AddLevelAction](#addlevelaction)
+
 ## Usage example ##
 
 A simple usage:
@@ -67,7 +92,7 @@ Result will be
 * fg_white
 * fg_crimson
 
-#### backgrund colors ####
+#### background colors ####
 
 * bg_black
 * bg_red
@@ -138,7 +163,7 @@ var ll = new LoggerLife({
 
 ```
 
-## Configuration explanation ##
+## Configurations ##
 
 ### Level ###
 
