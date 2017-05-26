@@ -1,6 +1,6 @@
-# LogLife #
+# LoggerLife #
 
-Log Life is a logging library for NodeJs that provides you multiple log methods, string interpolations for messages,
+LoggerLife is a logging library for NodeJs that provides you multiple log methods, string interpolations for messages,
 catching of main process error and warning events, file logging, log interception and callbacks launch.
 
 ## Usage example ##
@@ -10,9 +10,9 @@ A simple usage:
 ```
 #!javascript
 
-const LogLife = require("./LogLife.class.js");
+const LoggerLife = require("./LoggerLife.class.js");
 
-var ll = new LogLife();
+var ll = new LoggerLife();
 
 ll.log("info", "Hi! I'm info log level");
 ll.info("Hi! Also I'm info log level");
@@ -32,7 +32,7 @@ applied to the part after ":"
 ```
 #!javascript
 
-var ll = new LogLife();
+var ll = new LoggerLife();
 
 ll.log("info", "Hi! I'm [[reverse:info]] log level"); // the info word will be color reversed
 ll.log("error", "Hi! I'm [[bg_red.fg_white:error]] log level"); // the error word will be foreground color in white and background colored in red
@@ -80,7 +80,7 @@ An example of all configurations:
 ```
 #!javascript
 
-var ll = new LogLife({
+var ll = new LoggerLife({
   level: "debug",
   formatText: "%level %customDate - %content",
   formatActions: {
@@ -138,7 +138,7 @@ var ll = new LogLife({
 
 ### Level ###
 
-LogLife provides you 4 log-levels: **debug**, **info**, **warn**, **error**.
+LoggerLife provides you 4 log-levels: **debug**, **info**, **warn**, **error**.
 Debug is the highest log level, which means the other 3 levels will be logged
 in addition to it. When info is specified also warn and error are logged,
 but not debug. When warn is specified, in addition to it, only error is logged.
@@ -146,7 +146,7 @@ When error is specified as level only it is logged.
 ```
 #!javascript
 
-var ll = new LogLife({
+var ll = new LoggerLife({
   level: "warn"
 });
 
@@ -165,7 +165,7 @@ You can add custom interpolation methods with formatActions.
 ```
 #!javascript
 
-var ll = new LogLife({
+var ll = new LoggerLife({
   formatText: "%mainLabel - %customDate - %content", // default formatText is "%levelLabel %pidLabel %date - %content"
   formatActions: {
     mainLabel: (options) => { //options contains all the main informations about the log
@@ -187,7 +187,7 @@ Change the default color of the 4 log levels.
 ```
 #!javascript
 
-var ll = new LogLife({
+var ll = new LoggerLife({
   formatColors: {
     debug: "fg_red",
     info: "fg_white.reverse",
@@ -208,7 +208,7 @@ Change the default labels of the 4 log levels.
 ```
 #!javascript
 
-var ll = new LogLife({
+var ll = new LoggerLife({
   labels: {
     debug: "[DEBUG]", // default is [D]
     info: "[INFO]", // default is [I]
@@ -231,7 +231,7 @@ Change the log responsible function. Default is console.log
 
 let myLogFunction = (data) => console.log(`my custom function say ${data}`);
 
-var ll = new LogLife({
+var ll = new LoggerLife({
   logFunction: myLogFunction
 });
 
@@ -249,7 +249,7 @@ Logs are generated into different files, one per rank.
 ```
 #!javascript
 
-var ll = new LogLife({
+var ll = new LoggerLife({
   fileLog: {
     path: __dirname,
     rank: {
@@ -265,7 +265,7 @@ var ll = new LogLife({
 
 ### handlers ###
 
-The main process events can be logged via LogLife library.
+The main process events can be logged via LoggerLife library.
 These process events are **uncaughtException**, **unhandledRejection**, **warning** and **exit**.
 Get a look at NodeJs documentation to know more about that.
 Each of them can be configured with a loagAs key, that has to contain as value one of the
@@ -277,7 +277,7 @@ it will not exit as default system behavior (not recommend).
 ```
 #!javascript
 
-var ll = new LogLife({
+var ll = new LoggerLife({
   handlers: {
     uncaughtException: {
       logAs: "error", // default is error
@@ -302,7 +302,7 @@ and you can pass to the system the regexp that match the content to be interpola
 ```
 #!javascript
 
-var ll = new LogLife({
+var ll = new LoggerLife({
   interpolation: {
     regexp: /{{*([^}]+)}}/g, //means check all text between "{{" and "}}"
     separator: "||"
@@ -324,7 +324,7 @@ I know, it's hard to resist to such many fabulousness.
 ```
 #!javascript
 
-var ll = new LogLife({
+var ll = new LoggerLife({
   fabulous: {
     formatColor: [
       "bright.fg_red",
@@ -346,7 +346,7 @@ ll.log("info", "this is fabulous text!", { fabulous: true });
 ```
 #!javascript
 
-var ll = new LogLife();
+var ll = new LoggerLife();
 
 ll.log("debug", "this is debug");
 ll.info("this is info");
@@ -360,7 +360,7 @@ Log accept 3 parameters: level, content and options.
 ```
 #!javascript
 
-var ll = new LogLife();
+var ll = new LoggerLife();
 
 ll.log("debug", "this is debug");
 
@@ -384,7 +384,7 @@ by passing to it the 2 parameters content and options.
 ```
 #!javascript
 
-var ll = new LogLife();
+var ll = new LoggerLife();
 
 ll.debug("this is debug");
 
@@ -407,7 +407,7 @@ You can pass options to the log methods: fabulous, say(only available with linux
 ```
 #!javascript
 
-var ll = new LogLife();
+var ll = new LoggerLife();
 
 ll.debug("this is debug", {
   fabulous: true // if passed, it will log as fabulous mode
@@ -438,7 +438,7 @@ This event is attached to a specific log rank.It triggers every time a log that 
 ```
 #!javascript
 
-var ll = new LogLife();
+var ll = new LoggerLife();
 var counter = 0;
 
 ll.addRankAction("debug", (data) => {
@@ -469,7 +469,7 @@ Same as for addRankAction, but it triggers for every level below the one specifi
 ```
 #!javascript
 
-var ll = new LogLife();
+var ll = new LoggerLife();
 var counter = 0;
 
 ll.addLevelAction("info", (data) => {

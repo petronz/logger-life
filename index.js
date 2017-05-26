@@ -1,6 +1,6 @@
-const LogLife = require("./LogLife.class.js");
+const LoggerLife = require("./LoggerLife.class.js");
 
-var ll = new LogLife({
+var ll = new LoggerLife({
   /*
   * [String]level: available levels are debug, info, warn and error.
   * They accepts a string of available color concatenations (with "." as separator)

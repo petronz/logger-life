@@ -178,9 +178,9 @@ const privates = {
 };
 
 /*
-* Logger function
+* LoggerLife class
 */
-class Logger {
+class LoggerLife {
 
   constructor (options = {
     level: "debug",
