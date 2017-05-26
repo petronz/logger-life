@@ -1,4 +1,4 @@
-# LoggerLife #
+# LoggerLife - Beta version #
 
 LoggerLife is a logging library for NodeJs that provides you multiple log methods, string interpolations for messages,
 catching of main process error and warning events, file logging, log interception and callbacks launch.
@@ -19,6 +19,9 @@ ll.info("Hi! Also I'm info log level");
 ll.log("error", "Hi! I'm error log level");
 
 ```
+Result will be
+
+![Usage Example](http://i.imgur.com/rTF1psd.png)
 
 ## Interpolations ##
 
@@ -37,6 +40,9 @@ ll.log("info", "Hi! I'm [[reverse:info]] log level"); // the info word will be c
 ll.log("error", "Hi! I'm [[bg_red.fg_white:error]] log level"); // the error word will be foreground color in white and background colored in red
 
 ```
+Result will be
+
+![Interpolations](http://i.imgur.com/F6RJuNW.png)
 
 ## Available colors and styles ##
 
@@ -154,6 +160,10 @@ ll.log("error", "this is error"); //this will be logged
 ll.log("debug", "this is debug"); //this will not be logged
 
 ```
+Result will be
+
+![Level](http://i.imgur.com/5VEFO1W.png)
+
 ### formatText and formatActions ###
 
 formatText provides you the possibility to fully customize
@@ -177,6 +187,10 @@ var ll = new LoggerLife({
 ll.log("info", "this is info"); //this will log: [INFO|13660] - 1495720604797 - this is info
 
 ```
+Result will be
+
+![formatText and formatActions](http://i.imgur.com/CKDrE2g.png)
+
 ### formatColors ###
 
 Change the default color of the 4 log levels.
@@ -196,6 +210,10 @@ ll.log("info", "this is info"); //this will log the text in fg black and bg whit
 ll.log("error", "this is error"); //this will log text with bg white, fg red underlined
 
 ```
+
+Result will be
+
+![formatColors](http://i.imgur.com/P1VU5yN.png)
 
 ### labels ###
 
@@ -217,6 +235,10 @@ ll.log("error", "this is error"); //this will log: [ERROR] [123456] - 1495720604
 
 ```
 
+Result will be
+
+![labels](http://i.imgur.com/HBYDIeX.png)
+
 ### logFunction ###
 
 Change the log responsible function. Default is console.log
@@ -233,6 +255,10 @@ ll.log("info", "this is info"); //this will log: my custom function say [I] [123
 ll.log("error", "this is error"); //this will log: my custom function say [E] [123456] - 1495720604797 - this is error
 
 ```
+
+Result will be
+
+![logFunction](http://i.imgur.com/zeh9TwX.png)
 
 ### fileLog ###
 
@@ -304,6 +330,10 @@ ll.log("error", "this is {{reverse||error}}");
 
 ```
 
+Result will be
+
+![interpolation](http://i.imgur.com/WrrkoQi.png)
+
 ### fabulous ###
 
 Do you need a touch of... fabulous?
@@ -330,6 +360,10 @@ var ll = new LoggerLife({
 ll.log("info", "this is fabulous text!", { fabulous: true });
 
 ```
+
+Result will be
+
+![fabulous](http://i.imgur.com/4UjU6XD.png)
 
 ## Methods ##
 
@@ -363,6 +397,10 @@ ll.log("error", "this is another error");
 ll.log("info", "this is my last info", { fabulous: true });
 
 ```
+
+Result will be
+
+![log](http://i.imgur.com/nrh5bOr.png)
 
 ### debug, info, warn and error ###
 
@@ -412,6 +450,10 @@ ll.log("debug", "this is debug", {
 
 ```
 
+Result will be
+
+![Available options for log](http://i.imgur.com/eJMsol9.png)
+
 ## Events ##
 
 Events are very useful to execute some arbitrary code every time a log level occurs.
@@ -447,6 +489,10 @@ setTimeout(() => {
 
 ```
 
+Result will be
+
+![addRankAction](http://i.imgur.com/4OSAmqI.png)
+
 ### addLevelAction ###
 
 Same as for addRankAction, but it triggers for every level below the one specified.
@@ -470,3 +516,7 @@ setTimeout(() => {
 }, 1000)
 
 ```
+
+Result will be
+
+![addLevelAction](http://i.imgur.com/UmRDsdZ.png)
