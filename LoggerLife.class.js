@@ -510,4 +510,4 @@ class LoggerLife {
 
 }
 
-module.exports = Logger;
+module.exports = LoggerLife;
