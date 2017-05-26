@@ -7,8 +7,7 @@ catching of main process error and warning events, file logging, log interceptio
 
 A simple usage:
 
-```
-#!javascript
+```js
 
 const LoggerLife = require("./LoggerLife.class.js");
 
@@ -18,6 +17,7 @@ ll.log("info", "Hi! I'm info log level");
 ll.info("Hi! Also I'm info log level");
 
 ll.log("error", "Hi! I'm error log level");
+
 ```
 
 ## Interpolations ##
@@ -29,8 +29,7 @@ the content inside of it is splitted if a ":" is found.
 In this case, the part before ":" are the color style that has to be
 applied to the part after ":"
 
-```
-#!javascript
+```js
 
 var ll = new LoggerLife();
 
@@ -77,8 +76,7 @@ ll.log("error", "Hi! I'm [[bg_red.fg_white:error]] log level"); // the error wor
 
 An example of all configurations:
 
-```
-#!javascript
+```js
 
 var ll = new LoggerLife({
   level: "debug",
@@ -143,8 +141,8 @@ Debug is the highest log level, which means the other 3 levels will be logged
 in addition to it. When info is specified also warn and error are logged,
 but not debug. When warn is specified, in addition to it, only error is logged.
 When error is specified as level only it is logged.
-```
-#!javascript
+
+```js
 
 var ll = new LoggerLife({
   level: "warn"
@@ -162,8 +160,7 @@ formatText provides you the possibility to fully customize
 the logged text. Default interpolation methods are: **%level**, **%pid**, **%date** and **%content**.
 You can add custom interpolation methods with formatActions.
 
-```
-#!javascript
+```js
 
 var ll = new LoggerLife({
   formatText: "%mainLabel - %customDate - %content", // default formatText is "%levelLabel %pidLabel %date - %content"
@@ -184,8 +181,7 @@ ll.log("info", "this is info"); //this will log: [INFO|13660] - 1495720604797 - 
 
 Change the default color of the 4 log levels.
 
-```
-#!javascript
+```js
 
 var ll = new LoggerLife({
   formatColors: {
@@ -205,8 +201,7 @@ ll.log("error", "this is error"); //this will log text with bg white, fg red und
 
 Change the default labels of the 4 log levels.
 
-```
-#!javascript
+```js
 
 var ll = new LoggerLife({
   labels: {
@@ -226,8 +221,7 @@ ll.log("error", "this is error"); //this will log: [ERROR] [123456] - 1495720604
 
 Change the log responsible function. Default is console.log
 
-```
-#!javascript
+```js
 
 let myLogFunction = (data) => console.log(`my custom function say ${data}`);
 
@@ -246,8 +240,7 @@ Setup the directory where to write the log files.
 setup also which rank of log must be write into a log file.
 Logs are generated into different files, one per rank.
 
-```
-#!javascript
+```js
 
 var ll = new LoggerLife({
   fileLog: {
@@ -274,8 +267,7 @@ If you pass a boolean true to the process event, this will use a default value.
 Only on **uncaughtException** you can specify an exit value (with exitCode key). If you pass false as value to exitCode,
 it will not exit as default system behavior (not recommend).
 
-```
-#!javascript
+```js
 
 var ll = new LoggerLife({
   handlers: {
@@ -299,8 +291,7 @@ var ll = new LoggerLife({
 You can change the default ":" as  separator into interpolation on log string content
 and you can pass to the system the regexp that match the content to be interpolate
 
-```
-#!javascript
+```js
 
 var ll = new LoggerLife({
   interpolation: {
@@ -321,8 +312,7 @@ text, otherwise it will use default values.
 Please, use it with careful, especially avoid production environment.
 I know, it's hard to resist to such many fabulousness.
 
-```
-#!javascript
+```js
 
 var ll = new LoggerLife({
   fabulous: {
@@ -343,8 +333,7 @@ ll.log("info", "this is fabulous text!", { fabulous: true });
 
 ## Methods ##
 
-```
-#!javascript
+```js
 
 var ll = new LoggerLife();
 
@@ -357,8 +346,7 @@ ll.info("this is info");
 
 Log accept 3 parameters: level, content and options.
 
-```
-#!javascript
+```js
 
 var ll = new LoggerLife();
 
@@ -381,8 +369,7 @@ ll.log("info", "this is my last info", { fabulous: true });
 You can log by using the level as method,
 by passing to it the 2 parameters content and options.
 
-```
-#!javascript
+```js
 
 var ll = new LoggerLife();
 
@@ -404,8 +391,7 @@ ll.info("this is my last info", { fabulous: true });
 
 You can pass options to the log methods: fabulous, say(only available with linux platforms) and formatColors.
 
-```
-#!javascript
+```js
 
 var ll = new LoggerLife();
 
@@ -435,8 +421,7 @@ You can add more then one event for each rank or level.
 
 This event is attached to a specific log rank.It triggers every time a log that rank is performed.
 
-```
-#!javascript
+```js
 
 var ll = new LoggerLife();
 var counter = 0;
@@ -466,8 +451,7 @@ setTimeout(() => {
 
 Same as for addRankAction, but it triggers for every level below the one specified.
 
-```
-#!javascript
+```js
 
 var ll = new LoggerLife();
 var counter = 0;
