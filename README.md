@@ -7,8 +7,8 @@ catching of main process error and warning events, file logging, log interceptio
 * [Interpolations](#interpolations)
 * [Available colors and styles](#available-colors-and-styles)
   * [Text styles](#text-styles)
- * [Foreground colors](#foreground-colors)
- * [Background colors](#background-colors)
+  * [Foreground colors](#foreground-colors)
+  * [Background colors](#background-colors)
 * [Full Configuration example](#full-configuration-example)
 * [Configurations](#configurations)
   * [Level](#level)
@@ -71,7 +71,7 @@ Result will be
 
 ## Available colors and styles ##
 
-#### text styles ####
+### Text styles ###
 
 * reset
 * bright
@@ -80,7 +80,7 @@ Result will be
 * reverse
 * hidden
 
-#### foreground colors ####
+### Foreground colors ###
 
 * fg_black
 * fg_red
@@ -92,7 +92,7 @@ Result will be
 * fg_white
 * fg_crimson
 
-#### background colors ####
+### Background colors ###
 
 * bg_black
 * bg_red
@@ -189,7 +189,7 @@ Result will be
 
 ![Level](http://i.imgur.com/5VEFO1W.png)
 
-### formatText and formatActions ###
+### FormatText and formatActions ###
 
 formatText provides you the possibility to fully customize
 the logged text. Default interpolation methods are: **%level**, **%pid**, **%date** and **%content**.
@@ -216,7 +216,7 @@ Result will be
 
 ![formatText and formatActions](http://i.imgur.com/CKDrE2g.png)
 
-### formatColors ###
+### FormatColors ###
 
 Change the default color of the 4 log levels.
 
@@ -240,7 +240,7 @@ Result will be
 
 ![formatColors](http://i.imgur.com/P1VU5yN.png)
 
-### labels ###
+### Labels ###
 
 Change the default labels of the 4 log levels.
 
@@ -264,7 +264,7 @@ Result will be
 
 ![labels](http://i.imgur.com/HBYDIeX.png)
 
-### logFunction ###
+### LogFunction ###
 
 Change the log responsible function. Default is console.log
 
@@ -285,7 +285,7 @@ Result will be
 
 ![logFunction](http://i.imgur.com/zeh9TwX.png)
 
-### fileLog ###
+### FileLog ###
 
 Setup the directory where to write the log files.
 setup also which rank of log must be write into a log file.
@@ -307,7 +307,7 @@ var ll = new LoggerLife({
 
 ```
 
-### handlers ###
+### Handlers ###
 
 The main process events can be logged via LoggerLife library.
 These process events are **uncaughtException**, **unhandledRejection**, **warning** and **exit**.
@@ -337,7 +337,7 @@ var ll = new LoggerLife({
 });
 
 ```
-### interpolation ###
+### Interpolation ###
 
 You can change the default ":" as  separator into interpolation on log string content
 and you can pass to the system the regexp that match the content to be interpolate
@@ -359,7 +359,7 @@ Result will be
 
 ![interpolation](http://i.imgur.com/WrrkoQi.png)
 
-### fabulous ###
+### Fabulous ###
 
 Do you need a touch of... fabulous?
 You can pass an array of available styles to customize your fabulously fabulous
@@ -401,7 +401,7 @@ ll.info("this is info");
 
 ```
 
-### log ###
+### Log ###
 
 Log accept 3 parameters: level, content and options.
 
@@ -427,7 +427,7 @@ Result will be
 
 ![log](http://i.imgur.com/nrh5bOr.png)
 
-### debug, info, warn and error ###
+### Debug, info, warn and error ###
 
 You can log by using the level as method,
 by passing to it the 2 parameters content and options.
@@ -484,7 +484,7 @@ Result will be
 Events are very useful to execute some arbitrary code every time a log level occurs.
 You can add more then one event for each rank or level.
 
-### addRankAction ###
+### AddRankAction ###
 
 This event is attached to a specific log rank.It triggers every time a log that rank is performed.
 
@@ -518,7 +518,7 @@ Result will be
 
 ![addRankAction](http://i.imgur.com/4OSAmqI.png)
 
-### addLevelAction ###
+### AddLevelAction ###
 
 Same as for addRankAction, but it triggers for every level below the one specified.
 
