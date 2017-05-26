@@ -3,6 +3,7 @@
 LoggerLife is a logging library for NodeJs that provides you multiple log methods, string interpolations for messages,
 catching of main process error and warning events, file logging, log interception and callbacks launch.
 
+* [Installation](#installation)
 * [Usage example](#usage-example)
 * [Interpolations](#interpolations)
 * [Available colors and styles](#available-colors-and-styles)
@@ -28,13 +29,22 @@ catching of main process error and warning events, file logging, log interceptio
   * [AddRankAction](#addrankAction)
   * [AddLevelAction](#addlevelaction)
 
+
+## Installation ##
+
+```bash
+
+  npm install --save logger-life
+
+```
+
 ## Usage example ##
 
 A simple usage:
 
 ```js
 
-const LoggerLife = require("./LoggerLife.class.js");
+const LoggerLife = require("logger-life");
 
 var ll = new LoggerLife();
 
