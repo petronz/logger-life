@@ -61,6 +61,7 @@ const privates = {
       content.colored = privates.fabulous.call(self, content.unformatted);
     }
 
+    self.formatText = (typeof self.formatText === typeof "string") ? self.formatText : "%levelLabel %pidLabel %date - %content";
     content.formatted = self.formatText;
 
     let result =  {
@@ -185,7 +186,7 @@ class Logger {
     level: "debug",
     formatColors: {},
     labels: {},
-    formatText: "%content",
+    formatText: "%levelLabel %pidLabel %date - %content",
     logFunction: console.warn,
     fileLog: {
       path: ".",
