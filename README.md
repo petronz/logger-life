@@ -1,6 +1,7 @@
 # LogLife #
 
-Log Life is a logging library that provides you multiple log methods, string interpolations for messages, catching of main error and warning events, file logging, log interception and launch callbacks.
+Log Life is a logging library for NodeJs that provides you multiple log methods, string interpolations for messages,
+catching of main process error and warning events, file logging, log interception and callbacks launch.
 
 ## Usage example ##
 
@@ -13,10 +14,10 @@ const LogLife = require("./LogLife.class.js");
 
 var ll = new LogLife();
 
-ll.log("info", "Hi! I'm info log level"); // output(in green): Hi! I'm info log level
-ll.info("Hi! Also I'm info log level"); // output(in green): Hi! I'm info log level
+ll.log("info", "Hi! I'm info log level");
+ll.info("Hi! Also I'm info log level");
 
-ll.log("error", "Hi! I'm info error level"); // output(in red): Hi! I'm error log level
+ll.log("error", "Hi! I'm error log level");
 ```
 
 ## Interpolations ##
@@ -396,6 +397,32 @@ ll.error("this is error");
 ll.error("this is another error");
 
 ll.info("this is my last info", { fabulous: true });
+
+```
+
+### Available options for log ###
+
+You can pass options to the log methods: fabulous, say(only available with linux platforms) and formatColors.
+
+```
+#!javascript
+
+var ll = new LogLife();
+
+ll.debug("this is debug", {
+  fabulous: true // if passed, it will log as fabulous mode
+});
+
+ll.log("debug", "this is debug", {
+  say: true // if passed as true, it will use the festival library to vocally reproduce the log
+});
+ll.log("debug", "this is debug", {
+  say: "lorem" // if passed as string, it will use the festival library to vocally reproduce the string passed when the log is provided
+});
+
+ll.log("debug", "this is debug", {
+  formatColors: "reverse" // if passed will change the style only for this log
+});
 
 ```
 
