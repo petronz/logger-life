@@ -91,7 +91,7 @@ const privates = {
     return result;
 
   },
-  _say: require('say'),
+  _say: require(`${__dirname}/say.js`),
   _fs: require('fs'),
   say: function(text, queue, force = false) {
 
@@ -102,8 +102,7 @@ const privates = {
       if(!force) {
         queue.push(text);
       }
-
-      this._say.speak(text, null, 1.2, function(err) {
+      this._say.speak(text, 1.2, function(err) {
         if (err){
           return console.error(err);
         }
