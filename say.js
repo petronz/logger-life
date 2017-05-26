@@ -1,5 +1,7 @@
 'use strict';
 
+/*jshint esversion: 6 */
+
 var child_process = require('child_process');
 var path = require('path');
 var childD;

@@ -1,1 +1,38 @@
-{}
+{
+  "name": "logger-life",
+  "description": "LoggerLife is a logging library for NodeJs that provides you multiple log methods, string interpolations for messages, catching of main process error and warning events, file logging, log interception and callbacks launch.",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "engines": {
+    "node": ">=6.3.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/petronz/logger-life.git"
+  },
+  "keywords": [
+    "log",
+    "logger",
+    "file",
+    "files",
+    "color",
+    "colors",
+    "node",
+    "nodejs",
+    "print",
+    "console"
+  ],
+  "author": "Luca Petri <petronz90@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/petronz/logger-life/issues"
+  },
+  "homepage": "https://github.com/petronz/logger-life#readme",
+  "devDependencies": {
+    "chai": "^4.0.0",
+    "mocha": "^3.4.2"
+  }
+}
