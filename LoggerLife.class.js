@@ -424,6 +424,9 @@ class LoggerLife {
 
     if(!!this.fileLog.rank && !!this.fileLog.rank[level]) {
       privates.writeFile.call(this, level, content.content.formatted);
+      if(!!this.fileLog.aggregate) {
+        privates.writeFile.call(this, "log-life", content.content.formatted);
+      }
     }
 
     if(options.say === true) {
@@ -447,7 +450,10 @@ class LoggerLife {
       }
     }
     if(!!this.fileLog.rank && !!this.fileLog.rank[level]) {
-      privates.writeFile.call(this, level, content.content.formatted)
+      privates.writeFile.call(this, level, content.content.formatted);
+      if(!!this.fileLog.aggregate) {
+        privates.writeFile.call(this, "log-life", content.content.formatted);
+      }
     }
 
     if(options.say === true) {
@@ -472,7 +478,10 @@ class LoggerLife {
       }
     }
     if(!!this.fileLog.rank && !!this.fileLog.rank[level]) {
-      privates.writeFile.call(this, level, content.content.formatted)
+      privates.writeFile.call(this, level, content.content.formatted);
+      if(!!this.fileLog.aggregate) {
+        privates.writeFile.call(this, "log-life", content.content.formatted);
+      }
     }
 
     if(options.say === true) {
@@ -497,7 +506,10 @@ class LoggerLife {
       }
     }
     if(!!this.fileLog.rank && !!this.fileLog.rank[level]) {
-      privates.writeFile.call(this, level, content.content.formatted)
+      privates.writeFile.call(this, level, content.content.formatted);
+      if(!!this.fileLog.aggregate) {
+        privates.writeFile.call(this, "log-life", content.content.formatted);
+      }
     }
 
     if(options.say === true) {

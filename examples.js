@@ -58,10 +58,11 @@ var ll = new LoggerLife({
     path: __dirname,
     rank: {
       info: false,
-      debug: false,
-      error: false,
+      debug: true,
+      error: true,
       warn: false
-    }
+    },
+    aggregate: true
   },
   /*
   * Handlers
