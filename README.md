@@ -297,9 +297,19 @@ Result will be
 
 ### FileLog ###
 
-Setup the directory where to write the log files.
-setup also which rank of log must be write into a log file.
-Logs are generated into different files, one per rank.
+FileLog parameter accept a string that identifies the file where to write your logs.
+
+```js
+
+var ll = new LoggerLife({
+  fileLog: "/path/to/your/file_log.log"
+});
+
+```
+
+If you need more customization, setup the directory where to write the log files,
+then setup which rank of log must be written into a log file.
+Logs are generated into different files, one per rank, using fileName level.log.
 
 ```js
 
@@ -311,6 +321,35 @@ var ll = new LoggerLife({
       debug: false,
       error: true, // every occurrence of log error is written into __dirname/error.log
       warn: false
+    }
+  }
+});
+
+```
+
+Rather then specify a boolean for each rank, you can pass a string or an array.
+If you pass a string the rank will use it as fileName (and path key as path).
+If you need to maximize the customization, you can pass an array of object.
+Each object will rappresent a file where to log.
+
+```js
+
+var ll = new LoggerLife({
+  fileLog: {
+    path: __dirname,
+    rank: {
+      info: "my-custom-info-file-name", // logs into `${fileLog.path}/my-custom-info-file-name.log`
+      debug: false, // wont log anything
+      error: [{
+        path: __dirname,
+        fileName: "error",
+        extension: "log"
+      }, {
+        path: "/var/log/my-projects",
+        fileName: "log",
+        extension: "log"
+      }], // every occurrence of log error is written into __dirname/error.log
+      warn: true // logs into `${fileLog.path}/warn.log`
     }
   }
 });
