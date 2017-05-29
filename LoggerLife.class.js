@@ -171,8 +171,24 @@ const privates = {
     return true;
 
   },
-  writeFile: function(level, content) {
-    privates._fs.appendFileSync(`${this.fileLog.path}/${level}.log`, `${content}\n`);
+  writeFile: function(level, content, options = {}) {
+
+    if(!!options.fullPath) {
+
+      var logFilePath = options.fullPath;
+
+    } else {
+
+      let path = !!options.path ? options.path : this.fileLog.path;
+      let fileName = !!options.fileName ? options.fileName : level;
+      let extension = !!options.extension ? options.extension : "log";
+
+      var logFilePath = `${path}/${fileName}.${extension}`;
+
+    }
+
+    privates._fs.appendFileSync(logFilePath, `${content}\n`);
+
   }
 
 };
@@ -402,67 +418,73 @@ class LoggerLife {
 
   log(level, content, options = {}) {
 
-    if(Reflect.ownKeys(this.formatColors).includes(level) && typeof this[level] === typeof ( () => {} )) {
-      this[level](content, options);
+    if(!this.levelsDependencies.includes(level)) {
+      return false;
+    }
+
+    content = privates.print.call(this, content, options.formatColor || this.formatColors[level], level, options);
+
+    if(this.actionsPerformer[level].length) {
+      for(let action of this.actionsPerformer[level]) {
+        action(content);
+      }
+    }
+
+    if(!!this.fileLog.rank && !!this.fileLog.rank[level]) {
+
+      if(typeof this.fileLog.rank[level] === typeof true) {
+
+        privates.writeFile.call(this, level, content.content.formatted);
+
+      } else if(typeof this.fileLog.rank[level] === typeof "string") {
+
+        privates.writeFile.call(this, this.fileLog.rank[level], content.content.formatted);
+
+      } else if(Array.isArray(this.fileLog.rank[level])) {
+
+        for(let log of this.fileLog.rank[level]) {
+          privates.writeFile.call(this, level, content.content.formatted, log);
+        }
+
+      }
+
+    } else if(typeof this.fileLog === typeof "string") {
+
+      privates.writeFile.call(this, level, content.content.formatted, {
+        fullPath: this.fileLog
+      });
+
+    }
+
+    if(options.say === true) {
+      privates.say(content.content.unformatted, this._sayQueue)
+    } else if(!!options.say && typeof options.say == typeof "string") {
+      privates.say(options.say, this._sayQueue)
     }
 
   }
+
   info(content, options = {}) {
 
     let level = "info";
     if(!this.levelsDependencies.includes(level)) {
       return false;
     }
-
-    content = privates.print.call(this, content, options.formatColor || this.formatColors[level], level, options);
-
-    if(this.actionsPerformer[level].length) {
-      for(let action of this.actionsPerformer[level]) {
-        action(content);
-      }
-    }
-
-    if(!!this.fileLog.rank && !!this.fileLog.rank[level]) {
-      privates.writeFile.call(this, level, content.content.formatted);
-      if(!!this.fileLog.aggregate) {
-        privates.writeFile.call(this, "log-life", content.content.formatted);
-      }
-    }
-
-    if(options.say === true) {
-      privates.say(content.content.unformatted, this._sayQueue)
-    } else if(!!options.say && typeof options.say == typeof "string") {
-      privates.say(options.say, this._sayQueue)
-    }
+    this.log(level, content, options);
 
   }
+
   warn(content, options = {}) {
+
     let level = "warn";
     if(!this.levelsDependencies.includes(level)) {
       return false;
     }
 
-    content = privates.print.call(this, content, options.formatColor || this.formatColors[level], level, options);
-
-    if(this.actionsPerformer[level].length) {
-      for(let action of this.actionsPerformer[level]) {
-        action(content);
-      }
-    }
-    if(!!this.fileLog.rank && !!this.fileLog.rank[level]) {
-      privates.writeFile.call(this, level, content.content.formatted);
-      if(!!this.fileLog.aggregate) {
-        privates.writeFile.call(this, "log-life", content.content.formatted);
-      }
-    }
-
-    if(options.say === true) {
-      privates.say(content.content.unformatted, this._sayQueue)
-    } else if(!!options.say && typeof options.say == typeof "string") {
-      privates.say(options.say, this._sayQueue)
-    }
+    this.log(level, content, options);
 
   }
+
   error(content, options = {}) {
 
     let level = "error";
@@ -470,27 +492,10 @@ class LoggerLife {
       return false;
     }
 
-    content = privates.print.call(this, content, options.formatColor || this.formatColors[level], level, options);
-
-    if(this.actionsPerformer[level].length) {
-      for(let action of this.actionsPerformer[level]) {
-        action(content);
-      }
-    }
-    if(!!this.fileLog.rank && !!this.fileLog.rank[level]) {
-      privates.writeFile.call(this, level, content.content.formatted);
-      if(!!this.fileLog.aggregate) {
-        privates.writeFile.call(this, "log-life", content.content.formatted);
-      }
-    }
-
-    if(options.say === true) {
-      privates.say(content.content.unformatted, this._sayQueue)
-    } else if(!!options.say && typeof options.say == typeof "string") {
-      privates.say(options.say, this._sayQueue)
-    }
+    this.log(level, content, options);
 
   }
+
   debug(content, options = {}) {
 
     let level = "debug";
@@ -498,25 +503,7 @@ class LoggerLife {
       return false;
     }
 
-    content = privates.print.call(this, content, options.formatColor || this.formatColors[level], level, options);
-
-    if(this.actionsPerformer[level].length) {
-      for(let action of this.actionsPerformer[level]) {
-        action(content);
-      }
-    }
-    if(!!this.fileLog.rank && !!this.fileLog.rank[level]) {
-      privates.writeFile.call(this, level, content.content.formatted);
-      if(!!this.fileLog.aggregate) {
-        privates.writeFile.call(this, "log-life", content.content.formatted);
-      }
-    }
-
-    if(options.say === true) {
-      privates.say(content.content.unformatted, this._sayQueue)
-    } else if(!!options.say && typeof options.say == typeof "string") {
-      privates.say(options.say, this._sayQueue)
-    }
+    this.log(level, content, options);
 
   }
 

@@ -54,15 +54,31 @@ var ll = new LoggerLife({
   * level contains all the 4 levels warn, error, info and debug; for each one of them
   * you spcify if you want to log on file or not
   */
+  fileLog: `${__dirname}/main.log`,
   fileLog: {
     path: __dirname,
     rank: {
-      info: false,
-      debug: true,
+      info: "infoBelle",
+      debug: [{
+        path: __dirname,
+        fileName: "debug",
+        extension: "log"
+      }, {
+        path: __dirname,
+        fileName: "log",
+        extension: "log"
+      }],
       error: true,
-      warn: false
-    },
-    aggregate: true
+      warn: [{
+        path: __dirname,
+        fileName: "warn",
+        extension: "log"
+      }, {
+        path: __dirname,
+        fileName: "log",
+        extension: "log"
+      }]
+    }
   },
   /*
   * Handlers
