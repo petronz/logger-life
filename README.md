@@ -348,7 +348,7 @@ var ll = new LoggerLife({
         path: "/var/log/my-projects",
         fileName: "log",
         extension: "log"
-      }], // every occurrence of log error is written into __dirname/error.log
+      }], // it will log into `${__dirname}/error.log` and /var/log/my-projects/log.log 
       warn: true // logs into `${fileLog.path}/warn.log`
     }
   }
