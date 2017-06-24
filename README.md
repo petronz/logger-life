@@ -25,6 +25,7 @@ catching of main process error and warning events, file logging, log interceptio
   * [Log](#log)
   * [Debug, info, warn and error](#debug-info-warn-and-error)
   * [Available options for log](#available-options-for-log)
+  * [Clone](#clone)
 * [Events](#events)
   * [AddRankAction](#addrankAction)
   * [AddLevelAction](#addlevelaction)
@@ -499,32 +500,6 @@ ll.info("this is my last info", { fabulous: true });
 
 ```
 
-### clone ###
-
-You can clone an existing logger and pass to the method the new options
-that will be merged with the old ones.
-
-```js
-
-
-var ll = new LoggerLife({
-  formatText: "my content %content"
-});
-
-/*
-* this will be the exact copy of ll
-*/
-var ll_clone = ll.clone();
-
-/*
-* ll_err will be the exact copy of ll except for level
-*/
-var ll_err = ll.clone({
-  level: "error"
-});
-
-```
-
 ### Available options for log ###
 
 You can pass options to the log methods: fabulous, say(only available with linux platforms) and formatColors.
@@ -553,6 +528,31 @@ ll.log("debug", "this is debug", {
 Result will be
 
 ![Available options for log](http://i.imgur.com/eJMsol9.png)
+
+### clone ###
+
+You can clone an existing logger and pass to the method the new options
+that will be merged with the old ones.
+
+```js
+
+var ll = new LoggerLife({
+  formatText: "my content %content"
+});
+
+/*
+* this will be the exact copy of ll
+*/
+var ll_clone = ll.clone();
+
+/*
+* ll_err will be the exact copy of ll except for level
+*/
+var ll_err = ll.clone({
+  level: "error"
+});
+
+```
 
 ## Events ##
 
