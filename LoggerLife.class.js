@@ -68,7 +68,8 @@ const privates = {
       content: content.colored,
       level: level,
       date: new Date(),
-      pid: process.pid
+      pid: process.pid,
+      tags: self.tags
     };
     for(let formatAction in self.formatActions) {
 
@@ -221,7 +222,7 @@ class LoggerLife {
     level: "debug",
     formatColors: {},
     labels: {},
-    formatText: "%levelLabel %pidLabel %date - %content",
+    formatText: "%levelLabel %pidLabel %date %tags- %content",
     logFunction: console.log,
     fileLog: {
       path: ".",
@@ -232,12 +233,16 @@ class LoggerLife {
         warning: false
       }
     },
+    tags: [],
+    tags_max_pad: 30,
     fabulous: {
       formatColors: []
     }
   }) {
 
     var self = this;
+
+    this.id = ("00000"+Math.floor((Math.random()*10000))).slice(-5);
 
     this._options = options;
 
@@ -316,7 +321,25 @@ class LoggerLife {
       info: []
     };
 
-    this.formatText = options.formatText || "%levelLabel %pidLabel %date - %content";
+    this.tags = options.tags || [];
+
+    this.max_pad = options.tags_max_pad;
+
+    if(options.tags_max_pad === false) {
+      this.max_pad = false;
+    } else if(!options.tags_max_pad || typeof options.tags_max_pad === typeof 0) {
+      this.max_pad = options.tags_max_pad || 30;
+    } else {
+      this.max_pad = 30;
+    }
+
+    if(this.max_pad !== false) {
+      let t = "";
+      while(this.max_pad-- >= 0) t += " ";
+      this.max_pad = t;
+    }
+
+    this.formatText = options.formatText || "%levelLabel %pidLabel %date %tags- %content";
     this.formatActions = options.formatActions ||  {};
 
     Object.assign(this.formatActions, {
@@ -324,6 +347,13 @@ class LoggerLife {
       levelLabel: ({level}) => { return self.labels[level] || "" },
       date: ({date}) => { return date },
       pidLabel: ({pid}) => { return `[PID:${pid}]` },
+      tags: ({tags}) => {
+        // if(!tags.length) return "";
+        tags = tags.map(tag => `[${tag.toString().trim().toUpperCase()}]`).join(" ");
+        return (this.max_pad === false || tags.length >= this.max_pad.length) ?
+          tags+" " :
+          (this.max_pad + tags).slice(-1*this.max_pad.length)+" ";
+      },
     });
 
     this.fileLog = options.fileLog || {
@@ -416,6 +446,38 @@ class LoggerLife {
 
   clone(new_options = {}) {
     return new LoggerLife(privates.deep_merge(Object.assign({}, this._options), new_options));
+  }
+
+  addTag(tag) {
+    if(Array.isArray(tag)) {
+      this.tags = tag.map(t => t.toString()).concat(this.tags);
+    } else if(!this.tags.includes(tag.toString())) {
+      this.tags.unshift(tag.toString());
+    }
+    return this;
+  }
+  removeTag(tag) {
+    if(Array.isArray(tag)) {
+      for(let t of tag) {
+        if(typeof t === typeof 0 && typeof this.tags[t] !== typeof undefined) {
+          this.tags.splice(t, 1);
+        } else if(this.tags.includes(t)) {
+          this.tags.splice(this.tags.indexOf(t), 1);
+        }
+      }
+    } else if(typeof tag === typeof 0 && typeof this.tags[tag] !== typeof undefined) {
+      this.tags.splice(tag, 1);
+    } else if(this.tags.includes(tag)) {
+      this.tags.splice(this.tags.indexOf(tag), 1);
+    }
+    return this;
+  }
+  emptyTags() {
+    this.tags = [];
+    return this;
+  }
+  getTags() {
+    return this.tags;
   }
 
   addLevelAction(level, action) {

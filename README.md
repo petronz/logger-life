@@ -19,6 +19,7 @@ catching of main process error and warning events, file logging, log interceptio
   * [LogFunction](#logfunction)
   * [FileLog](#filelog)
   * [Handlers](#handlers)
+  * [Tags and String Padding](#tags-and-string-padding)
   * [Interpolation](#interpolation)
   * [Fabulous](#fabulous)
 * [Methods](#methods)
@@ -26,8 +27,9 @@ catching of main process error and warning events, file logging, log interceptio
   * [Debug, info, warn and error](#debug-info-warn-and-error)
   * [Available options for log](#available-options-for-log)
   * [Clone](#clone)
+  * [AddTag removeTag emptyTags and getTags](#addtag-removetag-emptytags-and-gettags)
 * [Events](#events)
-  * [AddRankAction](#addrankAction)
+  * [AddRankAction](#addrankaction)
   * [AddLevelAction](#addlevelaction)
 
 
@@ -159,6 +161,8 @@ var ll = new LoggerLife({
       logAs: "debug"
     }
   },
+  tags: ["http", "service"],
+  tags_max_pad: 30,
   fabulous: {
     formatColor: [
       "bright.fg_red",
@@ -203,7 +207,7 @@ Result will be
 ### FormatText and formatActions ###
 
 formatText provides you the possibility to fully customize
-the logged text. Default interpolation methods are: **%level**, **%pid**, **%date** and **%content**.
+the logged text. Default interpolation methods are: **%level**, **%pid**, **%date**, **%tags** and **%content**.
 You can add custom interpolation methods with formatActions.
 
 ```js
@@ -387,6 +391,37 @@ var ll = new LoggerLife({
 });
 
 ```
+
+### Tags and String Padding ###
+
+Set tags for each of your logger instance.
+Default left string padding is 30, you can change value and disable it by setting false.
+
+```js
+
+var ll = {
+  api: new LoggerLife({
+    tags: ["api", "service"],
+    tags_max_pad: 25 // default is 30
+  }),
+  request: new LoggerLife({
+    tags: ["http"],
+    tags_max_pad: 25
+  })
+};
+
+ll.api.log("info", "doing something with API");
+ll.request.log("error", "doing something bad with requests");
+
+// do more stuff...
+
+var important_id_of_something = "12345abc";
+ll.api.addTag(important_id_of_something);
+
+ll.api.log("debug", "api doing this and doing that..");
+
+```
+
 ### Interpolation ###
 
 You can change the default ":" as  separator into interpolation on log string content
@@ -529,7 +564,7 @@ Result will be
 
 ![Available options for log](http://i.imgur.com/eJMsol9.png)
 
-### clone ###
+### Clone ###
 
 You can clone an existing logger and pass to the method the new options
 that will be merged with the old ones.
@@ -553,6 +588,35 @@ var ll_err = ll.clone({
 });
 
 ```
+
+### AddTag removeTag emptyTags and getTags ###
+
+Manage tags by adding and removing them.
+
+```js
+
+var ll = new LoggerLife({
+  tags: ["api", "http"]
+});
+
+var some_value = Math.floor(Math.random() * 99);
+var important_id_of_something = "ftp";
+
+ll.log("debug", "step one");
+ll.addTag(important_id_of_something);
+ll.addTag(some_value);
+ll.log("debug", "step two");
+ll.removeTag(some_value);
+ll.log("debug", "step three");
+ll.addTag(["a", "b"]);
+ll.log("debug", `step four has ${ll.getTags()}`);
+ll.removeTag([0, "b"]);
+ll.log("debug", "step five");
+ll.emptyTags();
+ll.log("debug", "step six");
+
+```
+
 
 ## Events ##
 
