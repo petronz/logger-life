@@ -1,4 +1,4 @@
-# LoggerLife - Beta version #
+# LoggerLife #
 
 LoggerLife is a logging library for NodeJs that provides you multiple log methods, string interpolations for messages,
 catching of main process error and warning events, file logging, log interception and callbacks launch.
