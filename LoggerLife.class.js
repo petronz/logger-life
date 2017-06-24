@@ -203,7 +203,7 @@ class LoggerLife {
     formatColors: {},
     labels: {},
     formatText: "%levelLabel %pidLabel %date - %content",
-    logFunction: console.warn,
+    logFunction: console.log,
     fileLog: {
       path: ".",
       rank: {
