@@ -348,7 +348,7 @@ var ll = new LoggerLife({
         path: "/var/log/my-projects",
         fileName: "log",
         extension: "log"
-      }], // it will log into `${__dirname}/error.log` and /var/log/my-projects/log.log 
+      }], // it will log into `${__dirname}/error.log` and /var/log/my-projects/log.log
       warn: true // logs into `${fileLog.path}/warn.log`
     }
   }
@@ -496,6 +496,32 @@ ll.error("this is error");
 ll.error("this is another error");
 
 ll.info("this is my last info", { fabulous: true });
+
+```
+
+### clone ###
+
+You can clone an existing logger and pass to the method the new options
+that will be merged with the old ones.
+
+```js
+
+
+var ll = new LoggerLife({
+  formatText: "my content %content"
+});
+
+/*
+* this will be the exact copy of ll
+*/
+var ll_clone = ll.clone();
+
+/*
+* ll_err will be the exact copy of ll except for level
+*/
+var ll_err = ll.clone({
+  level: "error"
+});
 
 ```
 

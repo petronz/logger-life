@@ -1,7 +1,7 @@
 {
   "name": "logger-life",
   "description": "LoggerLife is a logging library for NodeJs that provides you multiple log methods, string interpolations for messages, catching of main process error and warning events, file logging, log interception and callbacks launch.",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "main": "index.js",
   "scripts": {
     "test": "mocha --reporter spec"

@@ -189,6 +189,25 @@ const privates = {
 
     privates._fs.appendFileSync(logFilePath, `${content}\n`);
 
+  },
+  is_object: function(item) {
+    return (item && typeof item === 'object' && !Array.isArray(item));
+  },
+  deep_merge: function(target, ...sources) {
+
+    if(!sources.length) return target;
+    const source = sources.shift();
+    if(this.is_object(target) && this.is_object(source)) {
+      for(const key in source) {
+        if(this.is_object(source[key])) {
+          if (!target[key]) Object.assign(target, { [key]: {} });
+          this.deep_merge(target[key], source[key]);
+        } else {
+          Object.assign(target, { [key]: source[key] });
+        }
+      }
+    }
+    return this.deep_merge(target, ...sources);
   }
 
 };
@@ -219,6 +238,8 @@ class LoggerLife {
   }) {
 
     var self = this;
+
+    this._options = options;
 
     this.colors = {
       none: "",
@@ -391,6 +412,10 @@ class LoggerLife {
 
   get availableColors() {
     return Reflect.ownKeys(this.colors);
+  }
+
+  clone(new_options = {}) {
+    return new LoggerLife(privates.deep_merge(Object.assign({}, this._options), new_options));
   }
 
   addLevelAction(level, action) {
